@@ -1,0 +1,7 @@
+PDF Fer 2.1.1 — Correcciones
+1. Corregido QPDF WASM: dist/wasm/qpdf.wasm
+2. Firmar PDF: campos Página, horizontal (%) y vertical (%)
+3. Actualización de cache para PWA
+4. Mejor error de contraseña / descarga
+
+Importante: no se ha hecho una prueba de desbloqueo de un PDF real porque el navegador en este entorno no puede descargar bibliotecas de internet.

@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Fer · Tu estudio de documentos</title>
+  <meta name="description" content="Une, divide, convierte, protege y optimiza tus documentos PDF desde un solo lugar.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#5148e6">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./tailwind-local.css">
+  <link rel="stylesheet" href="./brand.css">
+  <link rel="stylesheet" href="./editor.css">
+  <link rel="icon" type="image/svg+xml" href="./logo.svg">
+
+  <!-- Aplica el tema guardado antes de pintar la página (evita el parpadeo) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', dark);
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Tailwind CSS compilado y almacenado localmente para uso sin conexión. -->
+
+  <!-- Iconografía local: no requiere CDN ni conexión. -->
+  <script src="./icons.js" defer></script>
+
+  <style>
+    /* Ocultar la barra de desplazamiento de las pestañas en móvil */
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* Quitar la "x" nativa del campo de búsqueda (usamos nuestro propio botón) */
+    input[type="search"]::-webkit-search-cancel-button { display: none; }
+  </style>
+</head>
+
+<body class="relative min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+
+  <!-- Degradado decorativo del fondo -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-b from-indigo-100/80 to-transparent dark:from-indigo-500/10" aria-hidden="true"></div>
+
+  <a href="#tool-panel" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-indigo-600 focus:px-4 focus:py-2 focus:text-white">Saltar a las herramientas</a>
+
+  <!-- ============================ CABECERA ============================ -->
+  <header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
+
+      <a href="./" class="order-1 flex items-center gap-2.5" aria-label="Ir al inicio">
+        <span class="fer-brandmark" aria-hidden="true">FJ</span>
+        <span><span class="text-lg font-bold tracking-tight" data-app-name>PDF Fer</span><span class="fer-subbrand">DOCUMENT STUDIO</span></span>
+      </a>
+
+      <!-- Barra de búsqueda -->
+      <form id="search-form" role="search" class="relative order-3 w-full md:order-2 md:mx-auto md:w-auto md:max-w-xl md:flex-1">
+        <label for="search" class="sr-only">Buscar herramientas</label>
+        <i data-lucide="search" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+        <input id="search" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
+               placeholder="Buscar herramienta: unir, comprimir, firmar…"
+               class="w-full rounded-xl border border-slate-200 bg-slate-100/70 py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
+        <kbd id="search-kbd" class="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-slate-300 bg-white px-1.5 py-0.5 text-xs text-slate-400 dark:border-slate-700 dark:bg-slate-800 sm:inline-block">/</kbd>
+        <button type="button" id="search-clear" aria-label="Borrar búsqueda"
+                class="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </form>
+
+      <!-- Cambiar tema claro / oscuro -->
+      <button type="button" id="theme-toggle" aria-label="Cambiar entre tema claro y oscuro"
+              class="order-2 ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 md:order-3 md:ml-0">
+        <i data-lucide="moon" class="h-5 w-5 dark:hidden"></i>
+        <i data-lucide="sun" class="hidden h-5 w-5 dark:block"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================ CONTENIDO ============================ -->
+  <main class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+
+    <section class="fer-hero" aria-label="Bienvenida a PDF Fer">
+      <div class="fer-hero-art" aria-hidden="true"></div>
+      <span class="fer-eyebrow"><i data-lucide="sparkles" class="h-4 w-4"></i> PDF FER · DOCUMENT STUDIO</span>
+      <h1>Tus documentos, <span>mejor resueltos.</span></h1>
+      <p>Organiza, edita, convierte y protege tus archivos desde un solo lugar. Herramientas gratuitas que trabajan en tu navegador, con diseño cuidado y control sobre tus documentos.</p>
+      <div class="fer-feature-row">
+        <span class="fer-feature"><i data-lucide="shield-check"></i> Procesamiento local</span>
+        <span class="fer-feature"><i data-lucide="wallet"></i> Sin pagos ni registro</span>
+        <span class="fer-feature"><i data-lucide="monitor-smartphone"></i> PC y celular</span>
+      </div>
+    </section>
+    <div class="fer-toolbar">
+      <button type="button" class="fer-quickbutton" id="fer-editor-shortcut"><i data-lucide="pen-tool" class="h-4 w-4"></i> Editor visual</button>
+      <button type="button" class="fer-quickbutton" id="fer-merge-shortcut"><i data-lucide="files" class="h-4 w-4"></i> Unir archivos</button>
+      <button type="button" class="fer-install" id="fer-install" hidden><i data-lucide="download" class="h-4 w-4"></i> Instalar PDF Fer</button>
+      <span class="fer-live-indicator" id="fer-network">Conectado</span>
+    </div>
+
+    <!-- Pestañas de categorías (se generan desde JavaScript) -->
+    <div id="tabs" role="tablist" aria-label="Categorías de herramientas"
+         class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"></div>
+
+    <div class="fer-privacy mt-5 flex flex-wrap items-center gap-2 rounded-xl border px-4 py-3 text-sm">
+      <i data-lucide="shield-check" class="h-4 w-4 shrink-0"></i>
+      <span>Privacidad primero: tus archivos se procesan localmente en el dispositivo. Las bibliotecas y los modelos de IA pueden requerir internet para descargarse inicialmente. La calidad de las conversiones avanzadas varía según el formato.</span>
+    </div>
+    <p id="results-summary" class="mt-4 text-sm text-slate-500 dark:text-slate-400" aria-live="polite"></p>
+
+    <!-- Cuadrícula de tarjetas (se genera desde JavaScript) -->
+    <div id="tool-panel" role="tabpanel" tabindex="-1" class="mt-6 space-y-10 focus:outline-none"></div>
+
+    <noscript>
+      <p class="mt-8 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Esta aplicación necesita JavaScript para funcionar.</p>
+    </noscript>
+  </main>
+
+  <footer class="border-t border-slate-200 py-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+    <div class="flex items-center justify-center gap-3 mb-3"><span class="fer-brandmark" style="width:30px;height:30px;border-radius:9px;font-size:13px">FJ</span><strong data-app-name>PDF Fer</strong></div>
+    <p>© <span id="year"></span> · Hecho para gestionar documentos de forma sencilla, segura y gratuita.</p>
+    <p class="fer-footnote mt-2">Los archivos no se suben a nuestros servidores. Comprueba siempre los resultados de conversiones complejas.</p>
+  </footer>
+
+  <!-- ============================ MODAL DE HERRAMIENTA ============================ -->
+  <dialog id="tool-modal" aria-labelledby="modal-title"
+          class="m-auto max-h-[90vh] w-[calc(100%-1.5rem)] max-w-2xl overflow-hidden rounded-2xl bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex max-h-[90vh] flex-col">
+
+      <!-- Cabecera del modal -->
+      <div class="flex items-start gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
+        <span id="modal-icon" class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"></span>
+        <div class="min-w-0 flex-1">
+          <h2 id="modal-title" class="text-xl font-bold tracking-tight"></h2>
+          <p id="modal-desc" class="mt-1 text-sm text-slate-500 dark:text-slate-400"></p>
+        </div>
+        <button type="button" id="modal-close" aria-label="Cerrar"
+                class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:hover:bg-slate-800 dark:hover:text-slate-200">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="flex-1 space-y-5 overflow-y-auto p-5">
+
+        <!-- Zona de arrastrar y soltar -->
+        <label id="dropzone" for="file-input"
+               class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center transition focus-within:ring-4 focus-within:ring-indigo-500/20 hover:border-indigo-400 hover:bg-indigo-50/50 data-[dragging=true]:border-indigo-500 data-[dragging=true]:bg-indigo-50 dark:border-slate-700 dark:bg-slate-800/40 dark:hover:border-indigo-400 dark:hover:bg-indigo-500/5 dark:data-[dragging=true]:bg-indigo-500/10">
+          <span class="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 transition group-hover:scale-105 group-data-[dragging=true]:scale-110 dark:bg-indigo-500/15 dark:text-indigo-300">
+            <i data-lucide="upload" class="h-7 w-7"></i>
+          </span>
+          <span id="dz-title" class="text-base font-semibold"></span>
+          <span class="mt-1 text-sm text-slate-500 dark:text-slate-400">o <span class="font-medium text-indigo-600 underline-offset-2 group-hover:underline dark:text-indigo-300">haz clic para seleccionar</span></span>
+          <span id="dz-hint" class="mt-3 text-xs text-slate-400 dark:text-slate-500"></span>
+          <input id="file-input" type="file" class="sr-only">
+        </label>
+
+        <!-- Lista de archivos seleccionados -->
+        <ul id="file-list" class="space-y-2"></ul>
+
+        <!-- Opciones específicas de la herramienta -->
+        <div id="options" class="grid gap-4 sm:grid-cols-2"></div>
+
+        <!-- Barra de progreso -->
+        <div id="progress" role="progressbar" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+             class="hidden h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+          <div id="progress-bar" class="h-full w-0 rounded-full bg-indigo-600 transition-all duration-300"></div>
+        </div>
+
+        <!-- Mensajes de estado (accesibles) -->
+        <div id="status" role="status" aria-live="polite"></div>
+
+        <!-- Controles adicionales de firma -->
+        <div id="custom-ui" class="hidden"></div>
+
+        <!-- Resultados descargables -->
+        <ul id="results" class="space-y-2"></ul>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between">
+        <button type="button" id="btn-reset"
+                class="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-300 dark:hover:bg-slate-800">
+          Limpiar
+        </button>
+        <button type="button" id="btn-process" disabled
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-slate-900">
+          <span id="btn-spinner" class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true"></span>
+          <span id="btn-label">Procesar</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+
+<script>
+/* ==========================================================================
+ *  ÍNDICE DEL CÓDIGO
+ *  1. Configuración general
+ *  2. Catálogo de herramientas (datos: tarjetas, opciones, formatos)
+ *  3. Utilidades
+ *  4. Motores de procesamiento  ←  AQUÍ conectas pdf-lib, jsPDF, etc.
+ *  5. Estado de la aplicación
+ *  6. UI: pestañas, búsqueda y cuadrícula
+ *  7. UI: modal, archivos, opciones y resultados
+ *  8. Arranque
+ * ========================================================================== */
+(() => {
+  'use strict';
+
+  /* ========================================================================
+   * 1. CONFIGURACIÓN GENERAL
+   * ====================================================================== */
+  const CONFIG = {
+    appName: 'PDF Fer',   // Nombre visible de la plataforma
+    maxFileSizeMB: 70,       // Tamaño máximo de archivo para un navegador
+    maxFiles: 30,           // Máximo de archivos en herramientas multiarchivo
+  };
+
+  /* ========================================================================
+   * 2. CATÁLOGO DE HERRAMIENTAS
+   *
+   * Cada herramienta es un objeto con:
+   *   id           identificador único (es la clave para registerProcessor)
+   *   section      grupo visual de la cuadrícula (ver SECTIONS)
+   *   tabs         pestañas donde aparece (ver TABS)
+   *   icon         nombre del icono Lucide
+   *   title / description / keywords   textos y términos de búsqueda
+   *   accept       extensiones admitidas
+   *   multiple, minFiles, maxFiles, orderable   comportamiento de la selección
+   *   action       texto del botón principal (por defecto, el título)
+   *   options      campos de configuración que se muestran en el modal
+   * ====================================================================== */
+  const TABS = [
+    { id: 'all',       label: 'Todas' },
+    { id: 'organizar', label: 'Organizar' },
+    { id: 'convertir', label: 'Convertir' },
+    { id: 'optimizar', label: 'Optimizar' },
+    { id: 'seguridad', label: 'Seguridad' },
+  ];
+
+  const SECTIONS = [
+    { id: 'organizar', label: 'Organizar y Editar',          dot: 'bg-indigo-500',  tile: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300',    hover: 'hover:border-indigo-300 dark:hover:border-indigo-400/50' },
+    { id: 'desde-pdf', label: 'Convertir desde PDF',         dot: 'bg-emerald-500', tile: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300', hover: 'hover:border-emerald-300 dark:hover:border-emerald-400/50' },
+    { id: 'a-pdf',     label: 'Convertir a PDF',             dot: 'bg-sky-500',     tile: 'bg-sky-50 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300',                hover: 'hover:border-sky-300 dark:hover:border-sky-400/50' },
+    { id: 'seguridad', label: 'Seguridad y Reparación',      dot: 'bg-rose-500',    tile: 'bg-rose-50 text-rose-600 dark:bg-rose-500/15 dark:text-rose-300',            hover: 'hover:border-rose-300 dark:hover:border-rose-400/50' },
+    { id: 'avanzadas', label: 'Herramientas Avanzadas e IA', dot: 'bg-amber-500',   tile: 'bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300',        hover: 'hover:border-amber-300 dark:hover:border-amber-400/50' },
+  ];
+  const SECTION_BY_ID = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
+
+  // Constantes reutilizables para definir herramientas
+  const PDF = ['.pdf'];
+  const IMG = ['.jpg', '.jpeg', '.png', '.webp'];
+  const LANGS = [
+    ['es', 'Español'], ['en', 'Inglés'], ['pt', 'Portugués'], ['fr', 'Francés'],
+    ['de', 'Alemán'], ['it', 'Italiano'], ['zh', 'Chino'], ['ja', 'Japonés'],
+  ];
+  const ORIENTATION = [['auto', 'Automática'], ['portrait', 'Vertical'], ['landscape', 'Horizontal']];
+  const pagesOption = (extra = {}) => ({
+    id: 'pages', label: 'Páginas', type: 'text', placeholder: 'Ej.: 1-3, 5, 8-',
+    help: 'Déjalo vacío para aplicar a todas las páginas.', ...extra,
+  });
+
+  const TOOLS = [
+    /* ------------------------- Organizar y Editar ------------------------- */
+    { id: 'merge', section: 'organizar', tabs: ['organizar'], icon: 'merge',
+      title: 'Unir PDF', description: 'Combina varios archivos PDF en un solo documento y elige el orden.',
+      keywords: ['combinar', 'fusionar', 'juntar', 'concatenar'],
+      accept: PDF, multiple: true, minFiles: 2, orderable: true, action: 'Unir archivos', options: [] },
+
+    { id: 'split', section: 'organizar', tabs: ['organizar'], icon: 'split',
+      title: 'Dividir PDF', description: 'Separa un PDF por rangos de páginas o extrae cada página por separado.',
+      keywords: ['separar', 'extraer', 'cortar', 'partir'],
+      accept: PDF, action: 'Dividir PDF',
+      options: [
+        { id: 'mode', label: 'Modo de división', type: 'select', wide: true,
+          choices: [['ranges', 'Por rangos de páginas'], ['every', 'Cada N páginas'], ['single', 'Una página por archivo']] },
+        { id: 'ranges', label: 'Rangos separados por comas', type: 'text', placeholder: 'Ej.: 1-3, 4-6, 7-10', required: true, wide: true,
+          showIf: { key: 'mode', value: 'ranges' } },
+        { id: 'every', label: 'Páginas por archivo', type: 'number', min: 1, default: 2,
+          showIf: { key: 'mode', value: 'every' } },
+      ] },
+
+    { id: 'compress', section: 'organizar', tabs: ['organizar', 'optimizar'], icon: 'file-archive',
+      title: 'Comprimir PDF', description: 'Reoptimiza el archivo o comprime sus páginas como imagen; puede perder texto seleccionable.',
+      keywords: ['reducir', 'peso', 'tamaño', 'optimizar', 'aligerar'],
+      accept: PDF, action: 'Comprimir PDF',
+      options: [
+        { id: 'level', label: 'Nivel de compresión', type: 'select', wide: true, default: 'medium',
+          choices: [['low', 'Baja (mejor calidad)'], ['medium', 'Media (recomendada)'], ['high', 'Alta (menor tamaño)']] },
+      ] },
+
+    { id: 'edit', section: 'organizar', tabs: ['organizar'], icon: 'pencil-line',
+      title: 'Editar PDF', description: 'Editor visual profesional: añade y mueve texto, formas, subrayados, trazos e imágenes con vista previa y deshacer.',
+      keywords: ['modificar', 'texto', 'anotar', 'imagen', 'editor visual', 'dibujar'],
+      accept: PDF, action: 'Abrir editor visual', options: [] },
+
+    { id: 'rotate', section: 'organizar', tabs: ['organizar'], icon: 'rotate-cw',
+      title: 'Rotar PDF', description: 'Gira todas las páginas o solo las que elijas: 90°, 180° o 270°.',
+      keywords: ['girar', 'orientación', 'voltear'],
+      accept: PDF, action: 'Rotar PDF',
+      options: [
+        { id: 'angle', label: 'Giro', type: 'select', default: '90',
+          choices: [['90', '90° a la derecha'], ['180', '180°'], ['270', '90° a la izquierda']] },
+        pagesOption({ label: 'Páginas a rotar' }),
+      ] },
+
+    { id: 'reorder', section: 'organizar', tabs: ['organizar'], icon: 'arrow-up-down',
+      title: 'Ordenar PDF', description: 'Reorganiza las páginas del documento y cambia su posición.',
+      keywords: ['reordenar', 'mover', 'organizar páginas', 'invertir'],
+      accept: PDF, action: 'Ordenar páginas',
+      options: [
+        { id: 'mode', label: 'Orden', type: 'select', wide: true,
+          choices: [['manual', 'Orden manual por número de página'], ['reverse', 'Invertir el orden de las páginas']] },
+      ] },
+
+    { id: 'delete-pages', section: 'organizar', tabs: ['organizar'], icon: 'trash-2',
+      title: 'Eliminar Páginas', description: 'Quita del documento las páginas que ya no necesitas.',
+      keywords: ['borrar', 'quitar', 'remover', 'suprimir'],
+      accept: PDF, action: 'Eliminar páginas',
+      options: [
+        pagesOption({ label: 'Páginas a eliminar', required: true, placeholder: 'Ej.: 2, 4-6', help: 'Indica páginas sueltas o rangos separados por comas.', wide: true }),
+      ] },
+
+    { id: 'crop', section: 'organizar', tabs: ['organizar'], icon: 'crop',
+      title: 'Recortar PDF', description: 'Ajusta el área visible de las páginas sin borrar definitivamente el contenido.',
+      keywords: ['márgenes', 'cortar bordes', 'área', 'ajustar'],
+      accept: PDF, action: 'Recortar PDF',
+      options: [
+        { id: 'top',    label: 'Margen superior (mm)',  type: 'number', min: 0, default: 0 },
+        { id: 'bottom', label: 'Margen inferior (mm)',  type: 'number', min: 0, default: 0 },
+        { id: 'left',   label: 'Margen izquierdo (mm)', type: 'number', min: 0, default: 0 },
+        { id: 'right',  label: 'Margen derecho (mm)',   type: 'number', min: 0, default: 0 },
+      ] },
+
+    { id: 'forms', section: 'organizar', tabs: ['organizar'], icon: 'text-cursor-input',
+      title: 'Formularios PDF', description: 'Rellena campos interactivos existentes y descarga el PDF completado.',
+      keywords: ['rellenar', 'campos', 'casillas', 'formulario'],
+      accept: PDF, action: 'Abrir formulario',
+      options: [
+        { id: 'mode', label: 'Acción', type: 'select', wide: true,
+          choices: [['fill', 'Rellenar un formulario existente'], ['create', 'Crear campos de formulario']] },
+      ] },
+
+    { id: 'page-numbers', section: 'organizar', tabs: ['organizar'], icon: 'hash',
+      title: 'Números de página', description: 'Inserta numeración en la posición y con el formato que prefieras.',
+      keywords: ['numerar', 'paginar', 'paginación', 'foliar'],
+      accept: PDF, action: 'Añadir numeración',
+      options: [
+        { id: 'position', label: 'Posición', type: 'select', default: 'bottom-center',
+          choices: [['bottom-center', 'Abajo, centro'], ['bottom-right', 'Abajo, derecha'], ['bottom-left', 'Abajo, izquierda'], ['top-center', 'Arriba, centro'], ['top-right', 'Arriba, derecha']] },
+        { id: 'format', label: 'Formato', type: 'select', default: 'n',
+          choices: [['n', '1, 2, 3…'], ['page-n', 'Página 1, Página 2…'], ['n-of-total', '1 de N, 2 de N…']] },
+        { id: 'start', label: 'Empezar en el número', type: 'number', min: 1, default: 1 },
+      ] },
+
+    /* ------------------------- Convertir desde PDF ------------------------- */
+    { id: 'pdf-word', section: 'desde-pdf', tabs: ['convertir'], icon: 'file-text',
+      title: 'PDF a Word', description: 'Extrae el texto seleccionable a Word (.docx) editable; no conserva el diseño original.',
+      keywords: ['docx', 'doc', 'texto', 'documento editable'],
+      accept: PDF, action: 'Convertir a Word', options: [] },
+
+    { id: 'pdf-powerpoint', section: 'desde-pdf', tabs: ['convertir'], icon: 'presentation',
+      title: 'PDF a PowerPoint', description: 'Exporta cada página como una diapositiva de alta calidad; el contenido queda como imagen.',
+      keywords: ['pptx', 'ppt', 'diapositivas', 'presentación', 'slides'],
+      accept: PDF, action: 'Convertir a PowerPoint', options: [] },
+
+    { id: 'pdf-excel', section: 'desde-pdf', tabs: ['convertir'], icon: 'table',
+      title: 'PDF a Excel', description: 'Extrae texto distribuido por coordenadas a hojas de cálculo; requiere revisar los datos.',
+      keywords: ['xlsx', 'xls', 'tablas', 'hoja de cálculo', 'datos'],
+      accept: PDF, action: 'Convertir a Excel', options: [] },
+
+    { id: 'pdf-jpg', section: 'desde-pdf', tabs: ['convertir'], icon: 'image',
+      title: 'PDF a JPG', description: 'Exporta cada página de tu PDF como una imagen JPG.',
+      keywords: ['imagen', 'foto', 'jpeg', 'exportar páginas'],
+      accept: PDF, action: 'Convertir a JPG',
+      options: [
+        { id: 'dpi', label: 'Calidad de imagen', type: 'select', default: '150',
+          choices: [['150', 'Estándar (150 DPI)'], ['300', 'Alta (300 DPI)']] },
+        pagesOption(),
+      ] },
+
+    { id: 'pdf-pdfa', section: 'desde-pdf', tabs: ['convertir', 'optimizar'], icon: 'archive',
+      title: 'PDF a PDF/A', description: 'Convierte a PDF de archivo; valida el resultado antes de trámites regulados.',
+      keywords: ['archivo', 'conservación', 'pdfa', 'preservar', 'normativa'],
+      accept: PDF, action: 'Convertir a PDF/A',
+      options: [
+        { id: 'conformance', label: 'Nivel de conformidad', type: 'select', wide: true, default: '2b',
+          choices: [['2b', 'PDF/A-2b (recomendado)'], ['1b', 'PDF/A-1b']] },
+      ] },
+
+    { id: 'pdf-markdown', section: 'desde-pdf', tabs: ['convertir'], icon: 'file-code',
+      title: 'PDF a Markdown', description: 'Extrae el texto seleccionable a un archivo Markdown; no conserva el diseño original.',
+      keywords: ['md', 'texto plano', 'extraer texto', 'markdown'],
+      accept: PDF, action: 'Convertir a Markdown',
+      options: [
+        { id: 'pageBreaks', label: 'Identificar los cambios de página', type: 'checkbox', default: true },
+      ] },
+
+    /* --------------------------- Convertir a PDF --------------------------- */
+    { id: 'word-pdf', section: 'a-pdf', tabs: ['convertir'], icon: 'file-text',
+      title: 'Word a PDF', description: 'Convierte documentos .doc y .docx a PDF conservando su aspecto.',
+      keywords: ['docx', 'doc', 'documento', 'texto'],
+      accept: ['.doc', '.docx'], action: 'Convertir a PDF', options: [] },
+
+    { id: 'powerpoint-pdf', section: 'a-pdf', tabs: ['convertir'], icon: 'presentation',
+      title: 'PowerPoint a PDF', description: 'Convierte presentaciones .ppt y .pptx a un PDF fácil de compartir.',
+      keywords: ['pptx', 'ppt', 'diapositivas', 'presentación', 'slides'],
+      accept: ['.ppt', '.pptx'], action: 'Convertir a PDF', options: [] },
+
+    { id: 'excel-pdf', section: 'a-pdf', tabs: ['convertir'], icon: 'table',
+      title: 'Excel a PDF', description: 'Convierte hojas de cálculo .xls y .xlsx a PDF listo para imprimir.',
+      keywords: ['xlsx', 'xls', 'hoja de cálculo', 'tablas'],
+      accept: ['.xls', '.xlsx'], action: 'Convertir a PDF',
+      options: [
+        { id: 'orientation', label: 'Orientación', type: 'select', wide: true, choices: ORIENTATION },
+      ] },
+
+    { id: 'jpg-pdf', section: 'a-pdf', tabs: ['convertir'], icon: 'images',
+      title: 'JPG a PDF', description: 'Reúne una o varias imágenes en un único documento PDF.',
+      keywords: ['imagen', 'foto', 'jpeg', 'png', 'imágenes'],
+      accept: IMG, multiple: true, orderable: true, action: 'Crear PDF',
+      options: [
+        { id: 'pageSize', label: 'Tamaño de página', type: 'select', default: 'fit',
+          choices: [['fit', 'Ajustar a la imagen'], ['a4', 'A4'], ['letter', 'Carta']] },
+        { id: 'orientation', label: 'Orientación', type: 'select', choices: ORIENTATION },
+        { id: 'margin', label: 'Margen', type: 'select', default: '0',
+          choices: [['0', 'Sin margen'], ['10', 'Pequeño'], ['20', 'Grande']] },
+      ] },
+
+    { id: 'html-pdf', section: 'a-pdf', tabs: ['convertir'], icon: 'globe',
+      title: 'HTML a PDF', description: 'Convierte páginas o archivos HTML en documentos PDF.',
+      keywords: ['web', 'página web', 'html', 'sitio'],
+      accept: ['.html', '.htm'], action: 'Convertir a PDF',
+      options: [
+        { id: 'pageSize', label: 'Tamaño de página', type: 'select', wide: true, default: 'a4',
+          choices: [['a4', 'A4'], ['letter', 'Carta'], ['legal', 'Oficio']] },
+      ] },
+
+    /* ------------------------ Seguridad y Reparación ------------------------ */
+    { id: 'sign', section: 'seguridad', tabs: ['seguridad'], icon: 'pen-line',
+      title: 'Firmar PDF', description: 'Inserta una firma visible dibujada, escrita o en imagen (no es firma digital certificada).' ,
+      keywords: ['firma', 'rubricar', 'autografiar', 'firmar'],
+      accept: PDF, action: 'Firmar documento',
+      options: [
+        { id: 'method', label: 'Método de firma', type: 'select', wide: true, default: 'draw',
+          choices: [['draw', 'Dibujar con el ratón o el dedo'], ['type', 'Escribir mi nombre'], ['image', 'Subir una imagen de mi firma']] },
+        { id: 'text', label: 'Texto de la firma', type: 'text', placeholder: 'Tu nombre', required: true, wide: true,
+          showIf: { key: 'method', value: 'type' } },
+        // Estos valores son necesarios para ubicar la firma en el documento.
+        // En la versión anterior el procesador los leía, pero el formulario no los tenía.
+        { id: 'page', label: 'Página donde firmar', type: 'number', min: 1, default: 1,
+          help: '1 = primera página. Usa el número de la página en la que debe aparecer tu firma.' },
+        { id: 'x', label: 'Posición horizontal (%)', type: 'number', min: 0, max: 90, default: 62,
+          help: '0 = izquierda; 90 = cerca del borde derecho.' },
+        { id: 'y', label: 'Posición vertical (%)', type: 'number', min: 0, max: 90, default: 80,
+          help: '0 = arriba; 90 = cerca del borde inferior.' },
+      ] },
+
+    { id: 'watermark', section: 'seguridad', tabs: ['seguridad'], icon: 'droplets',
+      title: 'Marca de agua', description: 'Añade un texto o sello translúcido sobre las páginas.',
+      keywords: ['sello', 'texto', 'confidencial', 'borrador', 'logo'],
+      accept: PDF, action: 'Añadir marca de agua',
+      options: [
+        { id: 'text', label: 'Texto de la marca', type: 'text', placeholder: 'Ej.: CONFIDENCIAL', required: true, wide: true },
+        { id: 'layout', label: 'Disposición', type: 'select', default: 'diagonal',
+          choices: [['diagonal', 'Diagonal centrada'], ['center', 'Horizontal centrada'], ['tile', 'Mosaico']] },
+        { id: 'opacity', label: 'Opacidad (%)', type: 'number', min: 5, max: 100, default: 30 },
+      ] },
+
+    { id: 'repair', section: 'seguridad', tabs: ['seguridad', 'optimizar'], icon: 'wrench',
+      title: 'Reparar PDF', description: 'Intenta reconstruir archivos PDF legibles con errores menores; no garantiza recuperar archivos dañados.',
+      keywords: ['arreglar', 'recuperar', 'dañado', 'corrupto', 'restaurar'],
+      accept: PDF, action: 'Reparar PDF', options: [] },
+
+    { id: 'unlock', section: 'seguridad', tabs: ['seguridad'], icon: 'lock-open',
+      title: 'Desbloquear PDF', description: 'Quita la contraseña o las restricciones de un PDF del que eres propietario.',
+      keywords: ['contraseña', 'quitar clave', 'restricciones', 'abrir'],
+      accept: PDF, action: 'Desbloquear PDF',
+      options: [
+        { id: 'password', label: 'Contraseña actual (si la conoces)', type: 'password', wide: true },
+      ] },
+
+    { id: 'protect', section: 'seguridad', tabs: ['seguridad'], icon: 'lock',
+      title: 'Proteger PDF', description: 'Cifra tu documento con una contraseña y limita lo que se puede hacer con él.',
+      keywords: ['contraseña', 'cifrar', 'encriptar', 'clave', 'proteger'],
+      accept: PDF, action: 'Proteger PDF',
+      options: [
+        { id: 'password', label: 'Contraseña', type: 'password', required: true },
+        { id: 'confirm', label: 'Repite la contraseña', type: 'password', required: true, mustMatch: 'password' },
+        { id: 'noPrint', label: 'Impedir la impresión', type: 'checkbox', default: false },
+        { id: 'noCopy',  label: 'Impedir copiar el contenido', type: 'checkbox', default: false },
+      ] },
+
+    { id: 'redact', section: 'seguridad', tabs: ['seguridad'], icon: 'eye-off',
+      title: 'Censurar PDF', description: 'Oculta coincidencias textuales y rasteriza todas las páginas. Exige revisión visual antes de compartir.',
+      keywords: ['redactar', 'tachar', 'ocultar', 'datos personales', 'confidencial'],
+      accept: PDF, action: 'Censurar contenido',
+      options: [
+        { id: 'terms', label: 'Texto a censurar (uno por línea)', type: 'textarea', required: true, wide: true,
+          placeholder: 'Nombre completo\nNúmero de documento\nDirección…' },
+      ] },
+
+    /* ------------------------ Herramientas Avanzadas e IA ------------------------ */
+    { id: 'scan', section: 'avanzadas', tabs: ['convertir', 'optimizar'], icon: 'scan',
+      title: 'Escanea a PDF', description: 'Convierte fotos o escaneos existentes en un único PDF (no usa la cámara en vivo).',
+      keywords: ['escáner', 'cámara', 'foto', 'digitalizar', 'escanear'],
+      accept: IMG, multiple: true, orderable: true, action: 'Crear PDF',
+      options: [
+        { id: 'pageSize', label: 'Tamaño de página', type: 'select', choices: [['a4', 'A4'], ['letter', 'Carta']] },
+        { id: 'enhance', label: 'Mejora de imagen', type: 'select', default: 'gray',
+          choices: [['none', 'Sin mejora'], ['gray', 'Escala de grises'], ['bw', 'Blanco y negro']] },
+      ] },
+
+    { id: 'ocr', section: 'avanzadas', tabs: ['optimizar'], icon: 'scan-text',
+      title: 'OCR PDF', description: 'Reconoce texto en páginas escaneadas y lo descarga como .txt editable.',
+      keywords: ['reconocimiento', 'texto', 'escaneado', 'buscar', 'copiar texto'],
+      accept: ['.pdf', '.jpg', '.jpeg', '.png'], action: 'Reconocer texto',
+      options: [
+        { id: 'language', label: 'Idioma del documento', type: 'select', wide: true, default: 'es', choices: [['es', 'Español'], ['en', 'Inglés'], ['pt', 'Portugués'], ['fr', 'Francés'], ['de', 'Alemán']] },
+      ] },
+
+    { id: 'compare', section: 'avanzadas', tabs: ['optimizar'], icon: 'git-compare',
+      title: 'Comparar PDF', description: 'Compara el texto seleccionable de dos PDF y genera un reporte de diferencias.',
+      keywords: ['diferencias', 'versiones', 'cambios', 'contrastar'],
+      accept: PDF, multiple: true, minFiles: 2, maxFiles: 2, action: 'Comparar archivos', options: [] },
+
+    { id: 'summarize', section: 'avanzadas', tabs: ['optimizar'], icon: 'sparkles',
+      title: 'Resumir con IA', description: 'Obtén un resumen con las ideas clave de tu documento mediante IA.',
+      keywords: ['resumen', 'inteligencia artificial', 'ia', 'ideas clave', 'sintetizar'],
+      accept: PDF, action: 'Generar resumen',
+      options: [
+        { id: 'length', label: 'Extensión del resumen', type: 'select', default: 'medium',
+          choices: [['short', 'Breve'], ['medium', 'Media'], ['long', 'Detallada']] },
+        { id: 'language', label: 'Idioma del resumen', type: 'select', default: 'es', choices: [['es', 'Español (extractivo)'], ['en', 'Inglés (modelo IA si disponible)']] },
+      ] },
+
+    { id: 'translate', section: 'avanzadas', tabs: ['optimizar'], icon: 'languages',
+      title: 'Traducir PDF', description: 'Traduce texto entre español e inglés con IA local y lo exporta a un nuevo PDF sin el diseño original.',
+      keywords: ['idioma', 'traducción', 'lenguaje', 'traducir', 'ia'],
+      accept: PDF, action: 'Traducir documento',
+      options: [
+        { id: 'source', label: 'Idioma original', type: 'select', default: 'es', choices: [['es', 'Español'], ['en', 'Inglés']] },
+        { id: 'target', label: 'Traducir a', type: 'select', default: 'en', choices: [['en', 'Inglés'], ['es', 'Español']] },
+      ] },
+  ];
+
+  // Normalización de cada herramienta (valores por defecto + texto de búsqueda)
+  TOOLS.forEach(tool => {
+    tool.options = tool.options || [];
+    tool.minFiles = tool.minFiles || 1;
+    tool._search = normalize([tool.title, tool.description, SECTION_BY_ID[tool.section].label, ...(tool.keywords || [])].join(' '));
+  });
+
+  /* ========================================================================
+   * 3. UTILIDADES
+   * ====================================================================== */
+
+  /** Minúsculas y sin acentos, para buscar sin importar tildes. */
+  function normalize(text) {
+    return String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  /** Escapa texto para insertarlo de forma segura en HTML y atributos. */
+  function escapeHTML(text) {
+    return String(text).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  /** 1536000 → "1.5 MB" */
+  function formatBytes(bytes) {
+    if (!bytes) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    return `${(bytes / Math.pow(1024, i)).toFixed(i ? 1 : 0)} ${units[i]}`;
+  }
+
+  /**
+   * Convierte "1-3, 5, 8-" en [1,2,3,5,8,9,...,total] (páginas base 1, sin repetir).
+   * Útil para dividir, rotar, eliminar, etc. Un texto vacío devuelve todas las páginas.
+   */
+  function parsePageRanges(input, total) {
+    const text = String(input || '').trim();
+    if (!text) return Array.from({ length: total }, (_, i) => i + 1);
+    const pages = new Set();
+    text.split(',').map(s => s.trim()).filter(Boolean).forEach(part => {
+      const range = part.match(/^(\d*)\s*-\s*(\d*)$/);
+      if (range) {
+        const start = range[1] ? parseInt(range[1], 10) : 1;
+        const end = range[2] ? parseInt(range[2], 10) : total;
+        for (let p = Math.max(1, start); p <= Math.min(end, total); p++) pages.add(p);
+      } else if (/^\d+$/.test(part)) {
+        const p = parseInt(part, 10);
+        if (p >= 1 && p <= total) pages.add(p);
+      }
+    });
+    return [...pages].sort((a, b) => a - b);
+  }
+
+  /** Carga un script externo una sola vez (para librerías pesadas, bajo demanda). */
+  const loadedScripts = new Map();
+  function loadScript(src) {
+    if (!loadedScripts.has(src)) {
+      loadedScripts.set(src, new Promise((resolve, reject) => {
+        const el = document.createElement('script');
+        el.src = src;
+        el.onload = resolve;
+        el.onerror = () => { loadedScripts.delete(src); reject(new Error(`No se pudo cargar ${src}`)); };
+        document.head.appendChild(el);
+      }));
+    }
+    return loadedScripts.get(src);
+  }
+
+  const refreshIcons = () => { if (window.lucide) window.lucide.createIcons(); };
+
+  /* ========================================================================
+   * 4. MOTORES DE PROCESAMIENTO  (zona modular para tus librerías)
+   *
+   * Cada herramienta se conecta registrando una función con el mismo `id`
+   * del catálogo (sección 2):
+   *
+   *   registerProcessor('merge', async ({ files, options, onProgress, tool }) => {
+   *     ...
+   *     return { blob, filename };                  // un resultado
+   *     // o return [{ blob, filename }, ...];      // varios resultados
+   *   });
+   *
+   *  - files:      array de File, en el orden mostrado en pantalla
+   *  - options:    valores del formulario del modal (claves = id de cada opción)
+   *  - onProgress: onProgress(0..100) actualiza la barra de progreso
+   *  - Si lanzas un Error, el mensaje se muestra al usuario.
+   *  - Mientras una herramienta no tenga procesador, el modal avisa de que
+   *    todavía no está disponible.
+   *
+   * Librerías de código abierto sugeridas (cárgalas con loadScript cuando se use la herramienta):
+   *   pdf-lib     → unir, dividir, rotar, ordenar, eliminar, recortar, numerar, marca de agua, formularios
+   *   pdf.js      → renderizar páginas (PDF a JPG, miniaturas) y extraer texto (Markdown, comparar)
+   *   jsPDF       → JPG a PDF, Escanea a PDF, HTML a PDF
+   *   mammoth.js  → leer Word  |  SheetJS → leer/escribir Excel  |  docx / pptxgenjs → generar Word / PowerPoint
+   *   tesseract.js→ OCR
+   *   Proteger / desbloquear necesitan una librería con soporte de cifrado (p. ej. un build WebAssembly).
+   *   Resumir y traducir con IA requieren un modelo en el navegador o una API que tú controles.
+   * ====================================================================== */
+  const Processors = Object.create(null);
+  function registerProcessor(toolId, fn) {
+    if (!TOOLS.some(t => t.id === toolId)) console.warn(`registerProcessor: no existe la herramienta "${toolId}"`);
+    Processors[toolId] = fn;
+  }
+
+  class NotImplementedError extends Error {
+    constructor(toolId) {
+      super(`Procesador no implementado: ${toolId}`);
+      this.name = 'NotImplementedError';
+      this.toolId = toolId;
+    }
+  }
+
+  /* ========================================================================
+   * PROCESADORES REALES — PDF Fer 1.0
+   * Ejecutados localmente en el navegador; bibliotecas gratuitas, versiones fijas.
+   * ====================================================================== */
+  const CDN = Object.freeze({
+    pdf: 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
+    pdfjs: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    worker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+    zip: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    ocr: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+  });
+  async function pdfLib() {
+    await loadScript(CDN.pdf);
+    if (!window.PDFLib) throw new Error('No se pudo inicializar el motor PDF. Comprueba tu conexión a internet.');
+    return window.PDFLib;
+  }
+  async function pdfJs() {
+    await loadScript(CDN.pdfjs);
+    if (!window.pdfjsLib) throw new Error('No se pudo inicializar el lector de PDF. Comprueba tu conexión a internet.');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = CDN.worker;
+    return window.pdfjsLib;
+  }
+  async function openPDF(file) {
+    const { PDFDocument } = await pdfLib();
+    try {
+      const doc = await PDFDocument.load(await file.arrayBuffer());
+      if (!doc.getPageCount()) throw new Error('El documento no contiene páginas.');
+      return doc;
+    } catch (e) {
+      if (/encrypt|password/i.test(String(e))) throw new Error('Este PDF requiere contraseña o está cifrado. No se puede procesar con esta herramienta.');
+      throw new Error('No se pudo leer el PDF. El archivo puede estar dañado o ser incompatible. ' + (e?.message || ''));
+    }
+  }
+  async function openReader(file) {
+    const api = await pdfJs();
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      return await api.getDocument({ data: bytes, useSystemFonts: true }).promise;
+    } catch (e) {
+      throw new Error('No se pudo abrir el PDF para lectura: ' + (e?.message || 'archivo no compatible'));
+    }
+  }
+  const asPdf = (doc, filename, extra = {}) => doc.save({ useObjectStreams: true }).then(bytes => ({ blob: new Blob([bytes], { type: 'application/pdf' }), filename, ...extra }));
+  const asText = (content, filename, mime = 'text/plain') => ({ blob: new Blob(['\uFEFF', content], { type: `${mime};charset=utf-8` }), filename });
+  const safeStem = name => (name || 'documento').replace(/\.[^.]+$/, '').replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g, '_').slice(0, 65);
+  const checkedNumber = (input, min, max, label) => {
+    if (String(input ?? '').trim() === '') throw new Error(`Indica un valor para ${label}.`);
+    const n = Number(input);
+    if (!Number.isFinite(n) || n < min || n > max) throw new Error(`${label}: el valor debe estar entre ${min} y ${max}.`);
+    return n;
+  };
+  function strictPages(text, count, emptyMeansAll = true) {
+    const source = String(text ?? '').trim();
+    if (!source) { if (emptyMeansAll) return Array.from({ length: count }, (_, i) => i); throw new Error('Especifica las páginas.'); }
+    const found = new Set();
+    for (const segment of source.split(',')) {
+      const part = segment.trim();
+      const match = part.match(/^(\d*)\s*-\s*(\d*)$/);
+      if (match) {
+        if (!match[1] && !match[2]) throw new Error(`Rango inválido: ${part}`);
+        const a = match[1] ? Number(match[1]) : 1;
+        const b = match[2] ? Number(match[2]) : count;
+        if (a < 1 || b > count || a > b || b < 1) throw new Error(`Rango «${part}» fuera de las ${count} páginas.`);
+        for (let i = a; i <= b; i++) found.add(i - 1);
+      } else if (/^\d+$/.test(part)) {
+        const i = Number(part);
+        if (i < 1 || i > count) throw new Error(`La página ${i} no existe. El PDF tiene ${count} páginas.`);
+        found.add(i - 1);
+      } else throw new Error(`Rango de páginas no válido: «${part}». Ejemplo: 1-3, 5, 8-`);
+    }
+    if (!found.size) throw new Error('La selección de páginas está vacía.');
+    return [...found].sort((a, b) => a - b);
+  }
+  function pageIndex(value, count) {
+    return checkedNumber(value, 1, count, 'Número de página') - 1;
+  }
+  async function blankPDFPages(source, indices) {
+    const { PDFDocument } = await pdfLib();
+    const result = await PDFDocument.create();
+    (await result.copyPages(source, indices)).forEach(page => result.addPage(page));
+    return result;
+  }
+  async function asZip(files, filename) {
+    await loadScript(CDN.zip);
+    const zip = new window.JSZip();
+    files.forEach(item => zip.file(item.filename, item.blob));
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 5 } });
+    return { blob, filename };
+  }
+  async function drawPDFPage(page, scale = 1.4) {
+    const viewport = page.getViewport({ scale });
+    const factor = Math.min(1, 3200 / Math.max(viewport.width, viewport.height));
+    const finalViewport = factor < 1 ? page.getViewport({ scale: scale * factor }) : viewport;
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(finalViewport.width);
+    canvas.height = Math.ceil(finalViewport.height);
+    const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
+    if (!ctx) throw new Error('No se pudo crear el área de imágenes.');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await page.render({ canvasContext: ctx, viewport: finalViewport, background: '#ffffff' }).promise;
+    return canvas;
+  }
+  async function imageFileCanvas(file, enhance = 'none') {
+    let bitmap;
+    let url;
+    try {
+      if (window.createImageBitmap) bitmap = await createImageBitmap(file);
+      else {
+        url = URL.createObjectURL(file);
+        bitmap = await new Promise((resolve, reject) => {
+          const image = new Image(); image.onload = () => resolve(image); image.onerror = () => reject(new Error('Imagen inválida.')); image.src = url;
+        });
+      }
+      const width = bitmap.width || bitmap.naturalWidth;
+      const height = bitmap.height || bitmap.naturalHeight;
+      if (!width || !height) throw new Error('La imagen está vacía.');
+      const scale = Math.min(1, 3200 / Math.max(width, height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
+      const ctx = canvas.getContext('2d', { willReadFrequently: enhance !== 'none' });
+      if (!ctx) throw new Error('No se pudo abrir la imagen.');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (enhance !== 'none') {
+        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < img.data.length; i += 4) {
+          const c = Math.round(img.data[i] * .299 + img.data[i + 1] * .587 + img.data[i + 2] * .114);
+          const v = enhance === 'bw' ? (c >= 160 ? 255 : 0) : c;
+          img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+        }
+        ctx.putImageData(img, 0, 0);
+      }
+      return canvas;
+    } catch (err) { throw new Error(`No se pudo procesar la imagen «${file.name}»: ${err.message}`); }
+    finally { if (bitmap?.close) bitmap.close(); if (url) URL.revokeObjectURL(url); }
+  }
+  function canvasBlob(canvas, type = 'image/jpeg', quality = .85) {
+    return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('No se pudo convertir la imagen.')), type, quality));
+  }
+  function geometry(page) {
+    const { width, height } = page.getSize();
+    return { width, height };
+  }
+  async function pdfText(reader, notify = () => {}) {
+    const pages = [];
+    for (let i = 1; i <= reader.numPages; i++) {
+      const page = await reader.getPage(i);
+      const content = await page.getTextContent();
+      const lines = [];
+      let previousY = null, current = [];
+      for (const item of content.items) {
+        if (!item.str) continue;
+        const y = item.transform?.[5] ?? 0;
+        if (previousY !== null && Math.abs(y - previousY) > 3 && current.length) {
+          lines.push(current.join(' ').replace(/\s+/g, ' ').trim()); current = [];
+        }
+        current.push(item.str);
+        previousY = y;
+        if (item.hasEOL) { lines.push(current.join(' ').replace(/\s+/g, ' ').trim()); current = []; previousY = null; }
+      }
+      if (current.length) lines.push(current.join(' ').replace(/\s+/g, ' ').trim());
+      pages.push(lines.filter(Boolean).join('\n'));
+      notify(Math.round(i / reader.numPages * 95));
+      page.cleanup();
+    }
+    return pages;
+  }
+
+  // Organizar y editar
+  registerProcessor('merge', async ({ files, onProgress }) => {
+    const { PDFDocument } = await pdfLib();
+    const merged = await PDFDocument.create();
+    for (let i = 0; i < files.length; i++) {
+      const source = await openPDF(files[i]);
+      (await merged.copyPages(source, source.getPageIndices())).forEach(page => merged.addPage(page));
+      onProgress(Math.round((i + 1) * 95 / files.length));
+    }
+    return asPdf(merged, 'PDF-unidos.pdf');
+  });
+  registerProcessor('split', async ({ files, options, onProgress }) => {
+    const src = await openPDF(files[0]);
+    const n = src.getPageCount(), groups = [];
+    if (options.mode === 'ranges') {
+      if (!String(options.ranges || '').trim()) throw new Error('Indica uno o varios rangos, por ejemplo: 1-3, 4-6.');
+      for (const segment of String(options.ranges).split(',')) {
+        const indices = strictPages(segment, n, false);
+        groups.push(indices);
+      }
+    } else if (options.mode === 'single') {
+      for (let i = 0; i < n; i++) groups.push([i]);
+    } else {
+      const chunk = checkedNumber(options.every, 1, n, 'Páginas por archivo');
+      if (!Number.isInteger(chunk)) throw new Error('Indica un número entero de páginas por archivo.');
+      for (let i = 0; i < n; i += chunk) groups.push(Array.from({ length: Math.min(chunk, n - i) }, (_, j) => i + j));
+    }
+    if (groups.length > 60) throw new Error('Esta operación supera 60 archivos. Usa rangos mayores para dividir.');
+    const output = [];
+    for (let i = 0; i < groups.length; i++) {
+      const copy = await blankPDFPages(src, groups[i]);
+      output.push(await asPdf(copy, `${safeStem(files[0].name)}-parte-${String(i + 1).padStart(2, '0')}.pdf`));
+      onProgress(Math.round((i + 1) * 95 / groups.length));
+    }
+    return output.length === 1 ? output : asZip(output, `${safeStem(files[0].name)}-dividido.zip`);
+  });
+  registerProcessor('rotate', async ({ files, options, onProgress }) => {
+    const { degrees } = await pdfLib();
+    const doc = await openPDF(files[0]);
+    const pages = strictPages(options.pages, doc.getPageCount());
+    const angle = Number(options.angle);
+    if (![90, 180, 270].includes(angle)) throw new Error('Selecciona un giro válido.');
+    pages.forEach((index, i) => { const page = doc.getPage(index); page.setRotation(degrees((page.getRotation().angle + angle) % 360)); onProgress(Math.round((i + 1) * 95 / pages.length)); });
+    return asPdf(doc, `${safeStem(files[0].name)}-rotado.pdf`);
+  });
+  registerProcessor('delete-pages', async ({ files, options, onProgress }) => {
+    const src = await openPDF(files[0]); const n = src.getPageCount();
+    const del = new Set(strictPages(options.pages, n, false));
+    if (del.size === n) throw new Error('No puedes eliminar todas las páginas del documento.');
+    const keep = Array.from({ length: n }, (_, i) => i).filter(i => !del.has(i));
+    const doc = await blankPDFPages(src, keep); onProgress(95);
+    return asPdf(doc, `${safeStem(files[0].name)}-sin-paginas.pdf`);
+  });
+  registerProcessor('reorder', async ({ files, options, onProgress }) => {
+    const src = await openPDF(files[0]);
+    const n = src.getPageCount(); let order;
+    if (options.mode === 'reverse') order = src.getPageIndices().reverse();
+    else {
+      const v = String(options.order || '').trim();
+      if (!v) throw new Error(`Indica el nuevo orden de las ${n} páginas. Ejemplo: ${Array.from({length: Math.min(n, 5)}, (_, i) => i + 1).reverse().join(', ')}.`);
+      const tokens = v.split(',').map(x => x.trim());
+      if (!tokens.every(x => /^\d+$/.test(x))) throw new Error('Escribe solo números de página separados por comas.');
+      order = tokens.map(x => Number(x) - 1);
+      if (order.length !== n || new Set(order).size !== n || order.some(x => x < 0 || x >= n))
+        throw new Error(`Debes incluir exactamente las ${n} páginas, una sola vez cada una.`);
+    }
+    const doc = await blankPDFPages(src, order); onProgress(95);
+    return asPdf(doc, `${safeStem(files[0].name)}-ordenado.pdf`);
+  });
+  registerProcessor('crop', async ({ files, options, onProgress }) => {
+    const doc = await openPDF(files[0]);
+    const top = checkedNumber(options.top, 0, 1000, 'Margen superior');
+    const bottom = checkedNumber(options.bottom, 0, 1000, 'Margen inferior');
+    const left = checkedNumber(options.left, 0, 1000, 'Margen izquierdo');
+    const right = checkedNumber(options.right, 0, 1000, 'Margen derecho');
+    const mm = x => x * 72 / 25.4;
+    doc.getPages().forEach((page, i) => {
+      const box = page.getCropBox(); const l = mm(left), r = mm(right), t = mm(top), b = mm(bottom);
+      if (box.width - l - r <= 10 || box.height - t - b <= 10) throw new Error(`Los márgenes exceden el área disponible en la página ${i+1}.`);
+      page.setCropBox(box.x + l, box.y + b, box.width - l - r, box.height - t - b);
+      onProgress(Math.round((i + 1) * 95 / doc.getPageCount()));
+    });
+    return asPdf(doc, `${safeStem(files[0].name)}-recortado.pdf`);
+  });
+  registerProcessor('page-numbers', async ({ files, options, onProgress }) => {
+    const { StandardFonts, rgb } = await pdfLib();
+    const doc = await openPDF(files[0]); const font = await doc.embedFont(StandardFonts.Helvetica);
+    const start = checkedNumber(options.start, 1, 10000000, 'Número inicial');
+    const pages = doc.getPages();
+    pages.forEach((page, i) => {
+      const num = start + i;
+      const text = options.format === 'page-n' ? `Página ${num}` : (options.format === 'n-of-total' ? `${num} de ${start + pages.length - 1}` : `${num}`);
+      const { width, height } = geometry(page); const txtW = font.widthOfTextAtSize(text, 10);
+      const right = String(options.position).endsWith('right'); const left = String(options.position).endsWith('left');
+      const x = left ? 28 : right ? width - txtW - 28 : (width - txtW) / 2;
+      const y = String(options.position).startsWith('top') ? height - 29 : 27;
+      page.drawText(text, { x: Math.max(5, x), y, size: 10, font, color: rgb(.32, .36, .44) });
+      onProgress(Math.round((i + 1) * 95 / pages.length));
+    });
+    return asPdf(doc, `${safeStem(files[0].name)}-numerado.pdf`);
+  });
+  registerProcessor('edit', async ({ files, options, onProgress }) => {
+    const { StandardFonts, rgb } = await pdfLib();
+    const doc = await openPDF(files[0]); const page = doc.getPage(pageIndex(options.page, doc.getPageCount()));
+    const size = checkedNumber(options.size, 6, 72, 'Tamaño');
+    const xP = checkedNumber(options.x, 0, 95, 'Posición horizontal');
+    const yP = checkedNumber(options.y, 0, 95, 'Posición vertical');
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    const { width, height } = geometry(page);
+    const lineHeight = size * 1.25;
+    const lines = String(options.text || '').split(/\r?\n/);
+    lines.forEach((text, i) => page.drawText(text, { x: width * xP / 100, y: height * (1 - yP / 100) - size - lineHeight * i, size, font, color: rgb(.1, .16, .26), maxWidth: width * (1 - xP / 100) - 10 }));
+    onProgress(95); return asPdf(doc, `${safeStem(files[0].name)}-anotado.pdf`);
+  });
+  registerProcessor('watermark', async ({ files, options, onProgress }) => {
+    const { StandardFonts, rgb, degrees } = await pdfLib();
+    const doc = await openPDF(files[0]); const font = await doc.embedFont(StandardFonts.HelveticaBold);
+    const text = String(options.text || '').trim();
+    const opacity = checkedNumber(options.opacity, 5, 100, 'Opacidad') / 100;
+    if (text.length > 80) throw new Error('La marca de agua no puede superar 80 caracteres.');
+    doc.getPages().forEach((page, i) => {
+      const { width, height } = geometry(page);
+      const size = Math.max(15, Math.min(55, width / Math.max(9, text.length * .52)));
+      const fontW = font.widthOfTextAtSize(text, size);
+      const base = { size, font, color: rgb(.35, .35, .4), opacity };
+      if (options.layout === 'tile') {
+        for (let x = 22; x < width; x += Math.max(150, fontW + 30))
+          for (let y = 60; y < height; y += 140) page.drawText(text, { ...base, x, y, rotate: degrees(25) });
+      } else if (options.layout === 'diagonal') {
+        page.drawText(text, { ...base, x: Math.max(25, (width - fontW * .75) / 2), y: height * .48, rotate: degrees(26) });
+      } else page.drawText(text, { ...base, x: Math.max(10, (width - fontW) / 2), y: height / 2 });
+      onProgress(Math.round((i + 1) * 95 / doc.getPageCount()));
+    });
+    return asPdf(doc, `${safeStem(files[0].name)}-marca.pdf`);
+  });
+  registerProcessor('compress', async ({ files, options, onProgress }) => {
+    if (options.level === 'low') {
+      // Prefiere compresión sin pérdida de qpdf para conservar texto y vectores.
+      // pdf-lib funciona como respaldo si WebAssembly no pudo cargarse.
+      try {
+        const toolkit = await pdfStudio();
+        const bytes = await toolkit.compress(files[0]); onProgress(93);
+        if (bytes.length < files[0].size) return localBlob(bytes, `${safeStem(files[0].name)}-optimizado.pdf`, 'application/pdf', 'Compresión sin pérdida: conserva texto, vectores y calidad.');
+        return {blob: files[0], filename: `${safeStem(files[0].name)}-sin-reduccion.pdf`, note: 'No se redujo el tamaño sin sacrificar la calidad; se conservó el archivo original.'};
+      } catch (e) { console.warn('QPDF no disponible, modo PDF-lib:', e); }
+      const doc = await openPDF(files[0]); onProgress(90);
+      const result = await asPdf(doc, `${safeStem(files[0].name)}-optimizado.pdf`);
+      return result.blob.size >= files[0].size ? { blob: files[0], filename: `${safeStem(files[0].name)}-sin-reduccion.pdf`, note: 'El modo sin pérdida no consiguió reducir el tamaño; se conservó el PDF original.' } : result;
+    }
+    const { PDFDocument } = await pdfLib();
+    const reader = await openReader(files[0]);
+    if (reader.numPages > 80) throw new Error('Para evitar bloquear el navegador, la compresión de imágenes admite hasta 80 páginas.');
+    const dest = await PDFDocument.create();
+    const scale = options.level === 'high' ? 1.05 : 1.55;
+    const quality = options.level === 'high' ? .48 : .73;
+    try {
+      for (let i = 1; i <= reader.numPages; i++) {
+        const page = await reader.getPage(i); const canvas = await drawPDFPage(page, scale);
+        const img = await dest.embedJpg(await (await canvasBlob(canvas, 'image/jpeg', quality)).arrayBuffer());
+        const viewport = page.getViewport({ scale: 1 });
+        const out = dest.addPage([viewport.width, viewport.height]);
+        out.drawImage(img, { x: 0, y: 0, width: viewport.width, height: viewport.height });
+        canvas.width = canvas.height = 0; page.cleanup();
+        onProgress(Math.round(i * 95 / reader.numPages));
+      }
+    } finally { await reader.destroy(); }
+    const result = await asPdf(dest, `${safeStem(files[0].name)}-comprimido.pdf`);
+    if (result.blob.size >= files[0].size) return {
+      blob: files[0], filename: `${safeStem(files[0].name)}-sin-reduccion.pdf`,
+      note: 'La compresión con imágenes no redujo el tamaño; se conserva el documento original, con texto seleccionable.'
+    };
+    result.note = 'Se redujo el tamaño, convirtiendo las páginas a imágenes. El texto puede dejar de ser seleccionable; guarda el PDF original.';
+    return result;
+  });
+  registerProcessor('repair', async ({ files, onProgress }) => {
+    try {
+      const toolkit = await pdfStudio();
+      const bytes = await toolkit.repair(files[0]); onProgress(95);
+      return localBlob(bytes, `${safeStem(files[0].name)}-reparado.pdf`, 'application/pdf',
+        'Reconstrucción mediante QPDF. Revisa las páginas; no se garantiza recuperar documentos gravemente dañados.');
+    } catch (e) { console.warn('Reparación QPDF no disponible; intentando reconstrucción básica',e); }
+    const doc = await openPDF(files[0]); onProgress(75);
+    const result = await asPdf(doc, `${safeStem(files[0].name)}-reconstruido.pdf`);
+    result.note = 'Reconstrucción básica completada. Comprueba manualmente la integridad de las páginas; no recupera daños graves.';
+    return result;
+  });
+
+  // Imágenes y conversiones locales
+  async function imagesToPdf({ files, options, onProgress }, isScan) {
+    const { PDFDocument } = await pdfLib();
+    const dest = await PDFDocument.create();
+    const pageSizes = { a4: [595.28, 841.89], letter: [612, 792] };
+    for (let i = 0; i < files.length; i++) {
+      const canvas = await imageFileCanvas(files[i], isScan ? (options.enhance || 'none') : 'none');
+      const bytes = await (await canvasBlob(canvas, 'image/jpeg', .9)).arrayBuffer();
+      const image = await dest.embedJpg(bytes);
+      const imgRatio = image.width / image.height;
+      const landscape = options.orientation === 'landscape' || (options.orientation === 'auto' && image.width > image.height);
+      let dimensions = pageSizes[options.pageSize] || [image.width * 72 / 96, image.height * 72 / 96];
+      if (landscape && dimensions[0] < dimensions[1]) dimensions = [...dimensions].reverse();
+      if (options.orientation === 'portrait' && dimensions[0] > dimensions[1]) dimensions = [...dimensions].reverse();
+      const page = dest.addPage(dimensions);
+      const margin = Number(options.margin || 0) * 72 / 25.4;
+      const fitW = Math.max(10, dimensions[0] - 2 * margin), fitH = Math.max(10, dimensions[1] - 2 * margin);
+      const fit = Math.min(fitW / image.width, fitH / image.height);
+      const w = image.width * fit, h = w / imgRatio;
+      page.drawImage(image, { x: (dimensions[0] - w) / 2, y: (dimensions[1] - h) / 2, width: w, height: h });
+      canvas.width = canvas.height = 0;
+      onProgress(Math.round((i + 1) * 95 / files.length));
+    }
+    return asPdf(dest, isScan ? 'documentos-escaneados.pdf' : 'imagenes-convertidas.pdf');
+  }
+  registerProcessor('jpg-pdf', ctx => imagesToPdf(ctx, false));
+  registerProcessor('scan', ctx => imagesToPdf(ctx, true));
+  registerProcessor('pdf-jpg', async ({ files, options, onProgress }) => {
+    const reader = await openReader(files[0]);
+    try {
+      const picks = strictPages(options.pages, reader.numPages);
+      if (picks.length > 60) throw new Error('Selecciona hasta 60 páginas por conversión para evitar saturar el navegador.');
+      const results = [];
+      for (let i = 0; i < picks.length; i++) {
+        const page = await reader.getPage(picks[i] + 1);
+        const canvas = await drawPDFPage(page, Number(options.dpi || 150) / 72);
+        const blob = await canvasBlob(canvas, 'image/jpeg', .91);
+        results.push({ blob, filename: `${safeStem(files[0].name)}-pagina-${String(picks[i] + 1).padStart(3, '0')}.jpg` });
+        canvas.width = canvas.height = 0; page.cleanup();
+        onProgress(Math.round((i + 1) * 95 / picks.length));
+      }
+      return results.length === 1 ? results : asZip(results, `${safeStem(files[0].name)}-imagenes.zip`);
+    } finally { await reader.destroy(); }
+  });
+  registerProcessor('pdf-markdown', async ({ files, options, onProgress }) => {
+    const reader = await openReader(files[0]);
+    try {
+      const pages = await pdfText(reader, onProgress);
+      if (!pages.some(x => x.trim())) throw new Error('Este PDF no contiene texto seleccionable. Prueba la herramienta OCR PDF.');
+      const lines = [`# ${safeStem(files[0].name)}`, ''];
+      pages.forEach((page, i) => {
+        if (options.pageBreaks) lines.push(`## Página ${i + 1}`, '');
+        lines.push(page, '');
+      });
+      return asText(lines.join('\n'), `${safeStem(files[0].name)}.md`, 'text/markdown');
+    } finally { await reader.destroy(); }
+  });
+  registerProcessor('pdf-word', async ({ files, onProgress }) => {
+    // Prueba una conversión semántica que recupera estructura, tablas e imágenes;
+    // ante fallos, genera un DOCX de texto válido y lo identifica claramente.
+    try {
+      const { Ream } = await officeEngine();
+      const bytes = await Ream.parse(new Uint8Array(await files[0].arrayBuffer())).convert('docx');
+      if (bytes && bytes.byteLength > 100) {
+        onProgress(95);
+        return localBlob(bytes, `${safeStem(files[0].name)}-editable.docx`,
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'Conversión semántica a Word: el resultado es editable, pero el diseño puede variar. Compara tablas y elementos antes de usarlo.');
+      }
+    } catch (e) {console.warn('Motor avanzado PDF→Word no disponible; exportando texto:',e);}
+    const reader = await openReader(files[0]);
+    let pages;
+    try { pages = await pdfText(reader, onProgress); }
+    finally { await reader.destroy(); }
+    if (!pages.some(p => p.trim())) throw new Error('No se detectó texto seleccionable. Usa OCR PDF para un documento escaneado.');
+    await loadScript(CDN.zip);
+    const xml = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    const paragraphs = [];
+    pages.forEach((content, index) => {
+      if (index) paragraphs.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>');
+      const lines = content.split('\n');
+      for (const line of lines) paragraphs.push(`<w:p><w:r><w:t xml:space="preserve">${xml(line)}</w:t></w:r></w:p>`);
+    });
+    const zip = new window.JSZip();
+    zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`);
+    zip.file('_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+    zip.file('word/document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:body>${paragraphs.join('')}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr></w:body>
+</w:document>`);
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+    return { blob, filename: `${safeStem(files[0].name)}-texto.docx`, note: 'Se ha exportado el texto; no se conservan fielmente tablas, imágenes ni formato.' };
+  });
+
+  registerProcessor('compare', async ({ files, onProgress }) => {
+    const a = await openReader(files[0]); const b = await openReader(files[1]);
+    let first, second;
+    try {
+      first = await pdfText(a, n => onProgress(Math.round(n * .45)));
+      second = await pdfText(b, n => onProgress(45 + Math.round(n * .5)));
+    } finally { await a.destroy(); await b.destroy(); }
+    if (!first.some(x => x.trim()) && !second.some(x => x.trim())) throw new Error('No se encontró texto seleccionable. Utiliza OCR si los documentos son escaneos.');
+    const lines = [`COMPARACIÓN DE ARCHIVOS PDF`, `Versión A: ${files[0].name}`, `Versión B: ${files[1].name}`, `Páginas: ${first.length} frente a ${second.length}`, '', 'Este informe compara texto extraído; no revisa formatos ni diferencias visuales.', ''];
+    let changes = 0;
+    for (let i = 0; i < Math.max(first.length, second.length); i++) {
+      const l1 = (first[i] || '').split('\n'), l2 = (second[i] || '').split('\n');
+      if ((first[i] || '') === (second[i] || '')) continue;
+      lines.push(`--- Página ${i+1} ---`);
+      for (let j = 0; j < Math.max(l1.length, l2.length); j++) {
+        if (l1[j] === l2[j]) continue;
+        changes++;
+        if (changes <= 2500) { if (l1[j]) lines.push(`- A: ${l1[j]}`); if (l2[j]) lines.push(`+ B: ${l2[j]}`); }
+      }
+    }
+    lines.unshift(`Diferencias de líneas detectadas: ${changes}`);
+    if (!changes) lines.push('Sin diferencias de texto detectadas.');
+    if (changes > 2500) lines.push('Se omitieron diferencias adicionales (límite de 2500 líneas).');
+    return asText(lines.join('\n'), 'comparacion-pdf.txt');
+  });
+  registerProcessor('ocr', async ({ files, options, onProgress }) => {
+    await loadScript(CDN.ocr);
+    if (!window.Tesseract?.createWorker) throw new Error('No se cargó el motor OCR.');
+    const languages = { es: 'spa', en: 'eng', pt: 'por', fr: 'fra', de: 'deu', it: 'ita', zh: 'chi_sim', ja: 'jpn' };
+    const worker = await window.Tesseract.createWorker(languages[options.language] || 'spa');
+    let reader;
+    const result = [];
+    try {
+      const file = files[0];
+      if (file.name.toLowerCase().endsWith('.pdf')) {
+        reader = await openReader(file);
+        if (reader.numPages > 20) throw new Error('OCR admite hasta 20 páginas por ejecución; divide primero el PDF.');
+        for (let i = 1; i <= reader.numPages; i++) {
+          const page = await reader.getPage(i); const canvas = await drawPDFPage(page, 1.8);
+          const recognized = await worker.recognize(canvas);
+          result.push(`=== Página ${i} ===\n${recognized.data.text.trim()}`);
+          canvas.width = canvas.height = 0; page.cleanup();
+          onProgress(Math.round(i * 95 / reader.numPages));
+        }
+      } else {
+        const canvas = await imageFileCanvas(file);
+        const recognized = await worker.recognize(canvas);
+        result.push(recognized.data.text.trim());
+        canvas.width = canvas.height = 0; onProgress(95);
+      }
+    } finally { await reader?.destroy(); await worker.terminate(); }
+    if (!result.join('').trim()) throw new Error('No se identificó texto legible en el documento.');
+    return asText(result.join('\n\n'), `${safeStem(files[0].name)}-ocr.txt`);
+  });
+  registerProcessor('sign', async ({ files, options, onProgress }) => {
+    const { StandardFonts, rgb } = await pdfLib();
+    const doc = await openPDF(files[0]);
+    const targetPage = checkedNumber(options.page, 1, doc.getPageCount(), 'Número de página');
+    if (!Number.isInteger(targetPage)) throw new Error('El número de página debe ser entero.');
+    const page = doc.getPage(targetPage - 1);
+    const { width, height } = geometry(page);
+    const x = width * checkedNumber(options.x, 0, 90, 'Posición horizontal') / 100;
+    const y = height * (1 - checkedNumber(options.y, 0, 90, 'Posición vertical') / 100) - 35;
+    if (options.method === 'type') {
+      const font = await doc.embedFont(StandardFonts.TimesRomanItalic);
+      const text = String(options.text || '').trim();
+      if (text.length > 70) throw new Error('La firma escrita debe tener menos de 70 caracteres.');
+      page.drawText(text, { x, y, size: 22, font, color: rgb(.08, .12, .26), maxWidth: width - x - 6 });
+    } else {
+      const data = options.method === 'draw' ? options.signatureDrawing : options.signatureImage;
+      if (!data) throw new Error(options.method === 'draw' ? 'Primero dibuja tu firma en el recuadro.' : 'Selecciona una imagen de tu firma.');
+      const image = data.startsWith('data:image/jpeg') ? await doc.embedJpg(data) : await doc.embedPng(data);
+      const w = Math.min(width - x - 10, 170);
+      const h = Math.min(70, w * image.height / image.width);
+      page.drawImage(image, { x, y, width: w, height: h });
+    }
+    onProgress(95);
+    const output = await asPdf(doc, `${safeStem(files[0].name)}-firmado.pdf`);
+    output.note = 'Firma visual insertada. No constituye una firma digital certificada con certificado criptográfico.';
+    return output;
+  });
+
+  registerProcessor('forms', async ({ files, options, onProgress }) => {
+    const { StandardFonts, PDFTextField, PDFCheckBox, PDFRadioGroup, PDFDropdown, PDFOptionList } = await pdfLib();
+    const doc = await openPDF(files[0]);
+    const form = doc.getForm();
+    const fields = form.getFields();
+    if (!fields.length) throw new Error('Este PDF no contiene campos interactivos de formulario.');
+    const values = Object.create(null);
+    for (const line of String(options.pairs || '').split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      const pos = line.indexOf('=');
+      if (pos < 1) throw new Error(`Formato de campo inválido: «${line}». Usa NombreDelCampo = Valor.`);
+      const name = line.slice(0, pos).trim();
+      if (!name) throw new Error('El nombre del campo no puede estar vacío.');
+      values[name] = line.slice(pos + 1).trim();
+    }
+    if (!Object.keys(values).length) throw new Error('Escribe al menos un campo y su valor.');
+    const defined = new Map(fields.map(f => [f.getName(), f]));
+    for (const [name, value] of Object.entries(values)) {
+      if (!defined.has(name)) throw new Error(`No existe el campo «${name}». Revisa los nombres mostrados.`);
+      const f = defined.get(name);
+      if (f instanceof PDFTextField) f.setText(value);
+      else if (f instanceof PDFCheckBox) /^(true|1|sí|si|yes|x)$/i.test(value) ? f.check() : f.uncheck();
+      else if (f instanceof PDFRadioGroup || f instanceof PDFDropdown || f instanceof PDFOptionList) f.select(value);
+      else throw new Error(`El tipo de campo «${name}» no está disponible para rellenar.`);
+    }
+    try { form.updateFieldAppearances(await doc.embedFont(StandardFonts.Helvetica)); }
+    catch (e) { console.warn('Apariencias de formulario no actualizadas:', e); }
+    onProgress(95);
+    return asPdf(doc, `${safeStem(files[0].name)}-formulario.pdf`);
+  });
+
+  /* ========================================================================
+   * PDF FER 2.0 — MOTORES DE CONVERSIÓN, SEGURIDAD Y PROCESAMIENTO LOCAL
+   * Dependencias cargadas solamente cuando se utilizan.
+   * ====================================================================== */
+  const extraScript = url => loadScript(url);
+  const localBlob = (bytes, filename, mime = 'application/pdf', note = '') => ({
+    blob: new Blob([bytes], { type: mime }), filename, ...(note ? {note} : {})
+  });
+  let pdfStudioPromise;
+  async function pdfStudio() {
+    if (!pdfStudioPromise) pdfStudioPromise = (async () => {
+      const pkg = await import('https://esm.sh/pdfstudio@0.4.0');
+      const wasmUrl = 'https://cdn.jsdelivr.net/npm/pdfstudio@0.4.0/dist/wasm/qpdf.wasm';
+      return pkg.createPdfToolkit({ wasmUrl });
+    })().catch(err => {
+      pdfStudioPromise = null;
+      throw new Error('No se pudo inicializar el motor de seguridad QPDF. Comprueba la conexión y que GitHub Pages haya actualizado los archivos. Detalle técnico: ' + err.message);
+    });
+    return pdfStudioPromise;
+  }
+  async function officeEngine() {
+    try { return await import('https://esm.sh/reamkit@1.34.0'); }
+    catch (err) { throw new Error('No se pudo cargar el motor de conversión Office. Requiere una conexión inicial a internet. ' + err.message); }
+  }
+  async function convertOfficeToPdf(file, onProgress, option = {}) {
+    const mod = await officeEngine();
+    onProgress(15);
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const result = await mod.Ream.parse(bytes).convert('pdf', option);
+    onProgress(95);
+    return localBlob(result, `${safeStem(file.name)}.pdf`, 'application/pdf', 'Conversión local. Revisa la tipografía, el diseño y las tablas antes de distribuir el documento.');
+  }
+  registerProcessor('word-pdf', async ({ files, onProgress }) => convertOfficeToPdf(files[0], onProgress));
+  registerProcessor('powerpoint-pdf', async ({ files, onProgress }) => convertOfficeToPdf(files[0], onProgress));
+  registerProcessor('excel-pdf', async ({ files, onProgress }) => convertOfficeToPdf(files[0], onProgress));
+  registerProcessor('pdf-pdfa', async ({ files, options, onProgress }) => {
+    const { Ream } = await officeEngine();
+    const file = files[0];
+    const source = Ream.parse(new Uint8Array(await file.arrayBuffer()));
+    const mode = options.conformance === '1b' ? 'PDF/A-1b' : 'PDF/A-2b';
+    const bytes = await source.convert('pdf', { pdfA: mode });
+    onProgress(95);
+    return localBlob(bytes, `${safeStem(file.name)}-PDF-A.pdf`, 'application/pdf', `Conversión solicitada a ${mode}. Antes de usar en trámites o archivo normativo, verifica conformidad con veraPDF u otro validador independiente.`);
+  });
+  registerProcessor('unlock', async ({ files, options, onProgress }) => {
+    const toolkit = await pdfStudio();
+    let bytes;
+    try {
+      bytes = await toolkit.unlock(files[0], { password: String(options.password || '') });
+    } catch (error) {
+      const message = String(error?.message || '');
+      if (/password|contrase|incorrect|invalid password|decrypt/i.test(message))
+        throw new Error('No se pudo desbloquear el PDF. Revisa que la contraseña sea correcta y que el archivo permita abrirse con ella.');
+      throw error;
+    }
+    onProgress(96);
+    return localBlob(bytes, `${safeStem(files[0].name)}-desbloqueado.pdf`);
+  });
+  registerProcessor('protect', async ({ files, options, onProgress }) => {
+    if (!options.password || String(options.password).length < 4) throw new Error('La contraseña debe tener al menos 4 caracteres. Se recomienda una frase de 12 o más.');
+    const toolkit = await pdfStudio();
+    const bytes = await toolkit.lock(files[0], {
+      userPassword: String(options.password),
+      ownerPassword: String(options.password), keyLength: 256,
+      permissions: { print: options.noPrint ? 'none' : 'full', modify: 'all', extract: !options.noCopy }
+    });
+    onProgress(96);
+    return localBlob(bytes, `${safeStem(files[0].name)}-protegido.pdf`, 'application/pdf', 'PDF cifrado con AES-256. Guarda tu contraseña en un lugar seguro; PDF Fer no la almacena.');
+  });
+
+  // Páginas PDF como imágenes dentro de un PowerPoint. Conserva exactamente la apariencia,
+  // pero el contenido no es editable de forma individual en la presentación.
+  registerProcessor('pdf-powerpoint', async ({ files, onProgress }) => {
+    await extraScript('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js');
+    const Pptx = window.pptxgen || window.PptxGenJS;
+    if (!Pptx) throw new Error('La biblioteca de PowerPoint no se pudo iniciar.');
+    const pptx = new Pptx(); pptx.layout='LAYOUT_WIDE';
+    const reader = await openReader(files[0]);
+    try {
+      if (reader.numPages > 60) throw new Error('Se admiten hasta 60 páginas por presentación; divide el documento antes.');
+      for (let i = 1; i <= reader.numPages; i++) {
+        const page = await reader.getPage(i);
+        const canvas = await drawPDFPage(page, 1.6);
+        const slide = pptx.addSlide();
+        slide.background = {color:'FFFFFF'};
+        const data = canvas.toDataURL('image/jpeg', .89);
+        const vw=13.333, vh=7.5;
+        const ratio=canvas.width/canvas.height;
+        const w=Math.min(vw,vh*ratio),h=w/ratio;
+        slide.addImage({data,x:(vw-w)/2,y:(vh-h)/2,w,h});
+        canvas.width=canvas.height=0; page.cleanup();
+        onProgress(Math.round(i/reader.numPages*95));
+      }
+      const blob = await pptx.write({outputType:'blob', compression:true});
+      return {blob, filename:`${safeStem(files[0].name)}-diapositivas.pptx`, note:'Cada página se inserta como imagen de alta calidad; el texto y las formas no son editables por separado.'};
+    } finally {await reader.destroy();}
+  });
+
+  // Extrae los elementos de texto con posición. No inventa columnas en documentos no tabulares.
+  registerProcessor('pdf-excel', async ({ files, onProgress }) => {
+    await extraScript(CDN.zip);
+    const reader = await openReader(files[0]);
+    const sheets=[];
+    try {
+      if(reader.numPages > 70) throw new Error('Hasta 70 páginas por archivo Excel. Divide primero el PDF.');
+      for(let p=1;p<=reader.numPages;p++) {
+        const page=await reader.getPage(p);
+        const items=(await page.getTextContent()).items.filter(i=>i.str && i.str.trim()).sort((a,b)=>b.transform[5]-a.transform[5] || a.transform[4]-b.transform[4]);
+        const lines=[];
+        for(const item of items) {
+          const y=item.transform[5]; let line=lines.find(x=>Math.abs(x.y-y)<3);
+          if(!line){line={y,cells:[]};lines.push(line);}line.cells.push({x:item.transform[4],text:item.str.trim()});
+        }
+        sheets.push(lines.sort((a,b)=>b.y-a.y).map(line=>line.cells.sort((a,b)=>a.x-b.x).map(v=>v.text)));
+        page.cleanup(); onProgress(Math.round(p/reader.numPages*85));
+      }
+    } finally {await reader.destroy();}
+    if(!sheets.some(sheet=>sheet.some(row=>row.length))) throw new Error('No se encontró texto seleccionable. Ejecuta OCR PDF para archivos escaneados.');
+    const z=new window.JSZip();
+    const esc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const col=i=>{let s='';for(i++;i;i=Math.floor((i-1)/26))s=String.fromCharCode(65+(i-1)%26)+s;return s;};
+    z.file('[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${sheets.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`);
+    z.file('_rels/.rels',`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`);
+    z.file('xl/workbook.xml',`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((_,i)=>`<sheet name="Página ${i+1}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`);
+    z.file('xl/_rels/workbook.xml.rels',`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}</Relationships>`);
+    sheets.forEach((sheet,i)=>z.file(`xl/worksheets/sheet${i+1}.xml`,`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${sheet.map((row,r)=>`<row r="${r+1}">${row.slice(0,120).map((value,c)=>`<c r="${col(c)}${r+1}" t="inlineStr"><is><t xml:space="preserve">${esc(value)}</t></is></c>`).join('')}</row>`).join('')}</sheetData></worksheet>`));
+    const blob=await z.generateAsync({type:'blob',compression:'DEFLATE'});onProgress(97);
+    return {blob,filename:`${safeStem(files[0].name)}-tablas.xlsx`,note:'Extracción aproximada por posición del texto: valida columnas y cifras frente al PDF original, especialmente para registros contables.'};
+  });
+
+  // HTML -> PDF por renderización. El contenido se sanitiza antes de insertarse.
+  registerProcessor('html-pdf', async ({ files, options, onProgress }) => {
+    await extraScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+    if (!window.html2pdf) throw new Error('No se cargó el conversor HTML.');
+    const src=await files[0].text();
+    const parsed=new DOMParser().parseFromString(src,'text/html');
+    parsed.querySelectorAll('script,iframe,object,embed,form,link,meta,base,video,audio,style').forEach(el=>el.remove());
+    parsed.querySelectorAll('*').forEach(el=>{
+      for(const attr of [...el.attributes]) if(attr.name.toLowerCase().startsWith('on') || ['srcset','poster','action','formaction','src','style'].includes(attr.name.toLowerCase()) || (['href','xlink:href'].includes(attr.name.toLowerCase()) && !attr.value.startsWith('#')))el.removeAttribute(attr.name);
+    });
+    const node=document.createElement('div');
+    node.style.cssText='width:720px;background:#fff;color:#111827;padding:28px;position:fixed;left:-20000px;top:0;z-index:-1;font:15px/1.6 Arial,sans-serif';
+    node.innerHTML=parsed.body.innerHTML;
+    document.body.appendChild(node);
+    try {
+      onProgress(20);
+      const opt={margin:8,filename:'documento.pdf',image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:false,logging:false},jsPDF:{unit:'mm',format:options.pageSize||'a4',orientation:'portrait'}};
+      const blob=await window.html2pdf().set(opt).from(node).outputPdf('blob');onProgress(95);
+      return {blob,filename:`${safeStem(files[0].name)}.pdf`,note:'Conversión visual: scripts, recursos externos y estilos externos se omiten por seguridad. Revisa los saltos de página.'};
+    } finally {node.remove();}
+  });
+
+  // Redacción irreversible: rasteriza el PDF completo y solo después añade rectángulos negros.
+  // No mantiene contenido original ni capa de texto. No afirma detectar coincidencias fragmentadas.
+  registerProcessor('redact', async ({ files, options, onProgress }) => {
+    const terms=String(options.terms||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    if(!terms.length) throw new Error('Escribe al menos un texto exacto a censurar.');
+    const reader=await openReader(files[0]);const {PDFDocument}=await pdfLib();const output=await PDFDocument.create();
+    let hits=0; const matchedTerms = new Set();
+    try{
+      if(reader.numPages>30)throw new Error('La censura visual admite hasta 30 páginas por operación.');
+      for(let p=1;p<=reader.numPages;p++){
+        const page=await reader.getPage(p);const canvas=await drawPDFPage(page,1.7);
+        const normalVp=page.getViewport({scale:1});
+        const vp=page.getViewport({scale:canvas.width/normalVp.width});const ctx=canvas.getContext('2d');
+        const textItems=(await page.getTextContent()).items;
+        textItems.forEach(item=>{
+          if(!item.str?.trim())return;
+          const matches=terms.map((t,i)=>item.str.toLocaleLowerCase().includes(t.toLocaleLowerCase())?i:-1).filter(i=>i>=0);
+          if(!matches.length)return;
+          const tr=window.pdfjsLib.Util.transform(vp.transform,item.transform);
+          const h=Math.max(8,Math.abs(tr[3])*1.18);
+          const x=Math.max(0,tr[4]-3),y=Math.max(0,tr[5]-h),w=Math.max(7,item.width*vp.scale+7);
+          ctx.fillStyle='#000';ctx.fillRect(x,y,w,h+5);
+          for(const i of matches){hits++; matchedTerms.add(i);}
+        });
+        // Se incorpora una imagen nueva en un PDF nuevo, sin texto ni objetos originales.
+        const jpg=await output.embedJpg(canvas.toDataURL('image/jpeg',.96));
+        const size=page.getViewport({scale:1});const outPage=output.addPage([size.width,size.height]);
+        outPage.drawImage(jpg,{x:0,y:0,width:size.width,height:size.height});
+        canvas.width=canvas.height=0;page.cleanup();onProgress(Math.round(p/reader.numPages*94));
+      }
+      if(matchedTerms.size !== terms.length) {
+        const missing=terms.filter((_,i)=>!matchedTerms.has(i));
+        throw new Error(`No se encontraron TODOS los textos solicitados (${missing.length} sin encontrar). No se generó un PDF censurado parcial. Revisa ortografía, OCR y si los textos están divididos en fragmentos.`);
+      }
+      const bytes=await output.save();
+      return localBlob(bytes,`${safeStem(files[0].name)}-censurado.pdf`,'application/pdf',`Se oscurecieron ${hits} coincidencias y se reconstruyeron las páginas como imágenes. ATENCIÓN: revisa visualmente TODAS las páginas; términos divididos, imágenes y variantes pueden no haberse detectado.`);
+    }finally{await reader.destroy();}
+  });
+
+  // Resúmenes extractivos sin modelo: respaldo explícito ante fallo del modelo generativo.
+  function extractiveSummary(text, length='medium') {
+    const sentences=text.replace(/\s+/g,' ').match(/[^.!?¡¿]+[.!?]+|[^.!?¡¿]+$/g)?.map(s=>s.trim()).filter(s=>s.length>25)||[];
+    const stop=new Set('de la el en y a los las un una del al que por para con se es son como su sus más este esta pero sobre entre fue han ser una unos unas the and of in is are to for on with or this that from'.split(' '));
+    const words=(text.toLowerCase().match(/[a-záéíóúñ]{3,}/g)||[]).filter(w=>!stop.has(w));
+    const freq={};words.forEach(w=>freq[w]=(freq[w]||0)+1);
+    const target=length==='short'?4:length==='long'?15:8;
+    return sentences.map((line,i)=>({line,i,score:(line.toLowerCase().match(/[a-záéíóúñ]{3,}/g)||[]).reduce((s,w)=>s+(freq[w]||0),0)/Math.sqrt(line.length)}))
+      .sort((a,b)=>b.score-a.score).slice(0,target).sort((a,b)=>a.i-b.i).map(x=>x.line).join('\n\n');
+  }
+  let transformersModule;
+  async function getTransformers(){
+    if(!transformersModule)transformersModule=import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2').catch(e=>{transformersModule=null;throw e;});
+    return transformersModule;
+  }
+  registerProcessor('summarize', async ({ files,options,onProgress })=>{
+    const reader=await openReader(files[0]);let pages;
+    try{pages=await pdfText(reader,p=>onProgress(p*.5));}finally{await reader.destroy();}
+    const text=pages.join(' ').slice(0,22000);
+    if(!text.trim())throw new Error('No hay texto seleccionable; primero realiza OCR.');
+    const english=options.language==='en';
+    if(english){
+      try{
+        const {pipeline}=await getTransformers();onProgress(55);
+        const summarizer=await pipeline('summarization','Xenova/distilbart-cnn-6-6');
+        const result=await summarizer(text.slice(0,2800),{max_new_tokens:options.length==='short'?80:options.length==='long'?240:150});
+        onProgress(95);
+        return asText(result[0].summary_text,`${safeStem(files[0].name)}-resumen-IA.txt`);
+      } catch(e){console.warn('Modelo IA no disponible:',e);}
+    }
+    onProgress(95);
+    return {...asText(extractiveSummary(text,options.length),`${safeStem(files[0].name)}-resumen.txt`),note:'Resumen extractivo local (selección automática de oraciones), NO generado por IA. Para resumen generativo en inglés se intenta primero un modelo local que requiere descarga inicial.'};
+  });
+  async function textToPDF(text,filename){
+    const {PDFDocument,StandardFonts,rgb}=await pdfLib();const doc=await PDFDocument.create();const font=await doc.embedFont(StandardFonts.Helvetica);
+    let page=doc.addPage([595.28,841.89]);let y=798;
+    function wrapped(s){
+      let line='';const lines=[];
+      for(const word of s.split(/\s+/)){
+        const candidate=line?line+' '+word:word;
+        if(font.widthOfTextAtSize(candidate,11)>505 && line){lines.push(line);line=word;}else line=candidate;
+      }if(line)lines.push(line);return lines;
+    }
+    for(const paragraph of text.split(/\n/)){
+      for(const line of wrapped(paragraph)){
+        if(y<52){page=doc.addPage([595.28,841.89]);y=798;}
+        page.drawText(line,{x:45,y,size:11,font,color:rgb(.11,.14,.22)});y-=17;
+      }y-=7;
+    }
+    return asPdf(doc,filename);
+  }
+  registerProcessor('translate',async ({files,options,onProgress})=>{
+    const target=options.target;
+    if(!['es','en'].includes(target))throw new Error('La traducción local de esta versión funciona entre español e inglés. Selecciona ES o EN.');
+    const reader=await openReader(files[0]);let pages;
+    try{pages=await pdfText(reader,p=>onProgress(Math.round(p*.4)));}finally{await reader.destroy();}
+    const text=pages.join('\n\n');
+    if(!text.trim())throw new Error('El PDF no tiene texto extraíble; primero utiliza OCR PDF.');
+    if(text.length>9500)throw new Error('Por memoria, traduce archivos de hasta 9,500 caracteres por operación. Divide el documento.');
+    const source=options.source==='auto'?(target==='es'?'en':'es'):options.source;
+    if(!['es','en'].includes(source)||target===source)throw new Error('Selecciona español→inglés o inglés→español.');
+    const {pipeline}=await getTransformers();
+    const model=source==='es'?'Xenova/opus-mt-es-en':'Xenova/opus-mt-en-es';
+    const translator=await pipeline('translation',model);
+    const chunks=text.match(/[\s\S]{1,450}/g)||[];const out=[];
+    for(let i=0;i<chunks.length;i++){
+      const translated=await translator(chunks[i],{max_new_tokens:512});
+      out.push(translated[0].translation_text);
+      onProgress(45+Math.round((i+1)/chunks.length*50));
+    }
+    const result=await textToPDF(out.join('\n\n'),`${safeStem(files[0].name)}-traducido-${target}.pdf`);
+    result.note='Traducción por IA local entre español e inglés. La composición original, tablas e imágenes no se conservan. Revisa la traducción, especialmente en documentos legales y contables.';
+    return result;
+  });
+
+  const WORKING_TOOLS = new Set(Object.keys(Processors));
+  // Estas rutas funcionan mediante librerías adicionales o modelos de IA y requieren
+  // comprobación sobre documentos reales; no se presentan como resultados garantizados.
+  const BETA_TOOLS = new Set([
+    'pdf-powerpoint','pdf-excel','pdf-pdfa','word-pdf','powerpoint-pdf','excel-pdf',
+    'html-pdf','unlock','protect','redact','summarize','translate'
+  ]);
+
+  /* ========================================================================
+   * 5. ESTADO DE LA APLICACIÓN
+   * ====================================================================== */
+  const state = {
+    tab: 'all',
+    terms: [],            // términos de búsqueda ya normalizados
+    tool: null,           // herramienta abierta en el modal
+    files: [],            // File[] seleccionados
+    options: {},          // valores de las opciones de la herramienta
+    busy: false,
+    session: 0,           // se incrementa al abrir/cerrar/limpiar para ignorar resultados antiguos
+    urls: [],             // URLs de descarga creadas (se liberan al limpiar)
+  };
+
+  const els = {};         // referencias al DOM (se rellenan en init)
+
+  /* ========================================================================
+   * 6. UI: PESTAÑAS, BÚSQUEDA Y CUADRÍCULA
+   * ====================================================================== */
+  const inTab = (tool, tabId) => tabId === 'all' || tool.tabs.includes(tabId);
+  const matchesQuery = tool => state.terms.every(term => tool._search.includes(term));
+  const countForTab = tabId => TOOLS.filter(t => inTab(t, tabId) && matchesQuery(t)).length;
+
+  function renderTabs() {
+    els.tabs.innerHTML = TABS.map(tab => {
+      const active = state.tab === tab.id;
+      const count = countForTab(tab.id);
+      return `
+        <button type="button" role="tab" id="tab-${tab.id}" data-tab="${tab.id}"
+                aria-selected="${active}" aria-controls="tool-panel" tabindex="${active ? 0 : -1}"
+                class="inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${
+                  active
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-800 dark:hover:bg-slate-800'
+                }">
+          ${tab.label}
+          <span class="rounded-full px-2 py-0.5 text-xs ${active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'}">${count}</span>
+        </button>`;
+    }).join('');
+  }
+
+  function toolCardHTML(tool) {
+    const sec = SECTION_BY_ID[tool.section];
+    const active = WORKING_TOOLS.has(tool.id);
+    const beta = BETA_TOOLS.has(tool.id);
+    return `
+      <button type="button" data-tool="${tool.id}"
+              class="group flex h-full flex-col items-start gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:border-slate-800 dark:bg-slate-900 dark:focus-visible:ring-offset-slate-950 ${sec.hover}">
+        <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105 motion-reduce:transition-none ${sec.tile}">
+          <i data-lucide="${tool.icon}" class="h-6 w-6"></i>
+        </span>
+        <span class="block">
+          <span class="block text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHTML(tool.title)}</span>
+          <span class="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ${active && !beta ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300'}">
+            <span class="h-1.5 w-1.5 rounded-full ${active && !beta ? 'bg-emerald-500' : 'bg-amber-500'}"></span>${!active ? 'En desarrollo' : beta ? 'Beta · conexión inicial' : 'Disponible'}
+          </span>
+          <span class="mt-1 block text-sm leading-relaxed text-slate-500 dark:text-slate-400">${escapeHTML(tool.description)}</span>
+        </span>
+      </button>`;
+  }
+
+  function renderGrid() {
+    const results = TOOLS.filter(t => inTab(t, state.tab) && matchesQuery(t));
+    els.panel.setAttribute('aria-labelledby', `tab-${state.tab}`);
+
+    // Resumen de resultados
+    els.summary.textContent = state.terms.length
+      ? `${results.length} ${results.length === 1 ? 'resultado' : 'resultados'}`
+      : `${results.length} ${results.length === 1 ? 'herramienta' : 'herramientas'} · ${results.filter(t => WORKING_TOOLS.has(t.id) && !BETA_TOOLS.has(t.id)).length} estándar · ${results.filter(t => BETA_TOOLS.has(t.id)).length} beta`;
+
+    if (!results.length) {
+      const elsewhere = countForTab('all');
+      els.panel.innerHTML = `
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-white/60 px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900/40">
+          <i data-lucide="search-x" class="mx-auto h-10 w-10 text-slate-400"></i>
+          <h3 class="mt-4 text-lg font-semibold">No encontramos ninguna herramienta</h3>
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Prueba con otra palabra, por ejemplo «unir», «comprimir» o «firmar».</p>
+          <div class="mt-5 flex flex-wrap justify-center gap-3">
+            ${elsewhere > 0 && state.tab !== 'all' ? `<button type="button" data-action="show-all" class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950">Ver ${elsewhere} en todas las categorías</button>` : ''}
+            ${state.terms.length ? `<button type="button" data-action="clear-search" class="rounded-xl px-4 py-2 text-sm font-medium text-slate-600 ring-1 ring-slate-300 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800">Borrar búsqueda</button>` : ''}
+          </div>
+        </div>`;
+      refreshIcons();
+      return;
+    }
+
+    els.panel.innerHTML = SECTIONS.map(sec => {
+      const items = results.filter(t => t.section === sec.id);
+      if (!items.length) return '';
+      return `
+        <section aria-labelledby="sec-${sec.id}">
+          <h2 id="sec-${sec.id}" class="mb-4 flex items-center gap-2.5 text-lg font-semibold tracking-tight">
+            <span class="h-2.5 w-2.5 rounded-full ${sec.dot}" aria-hidden="true"></span>
+            ${sec.label}
+            <span class="text-sm font-normal text-slate-400">${items.length}</span>
+          </h2>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            ${items.map(toolCardHTML).join('')}
+          </div>
+        </section>`;
+    }).join('');
+    refreshIcons();
+  }
+
+  function renderAll() {
+    renderTabs();
+    renderGrid();
+  }
+
+  function setTab(tabId, { focus = false } = {}) {
+    state.tab = tabId;
+    renderAll();
+    if (focus) els.tabs.querySelector(`[data-tab="${tabId}"]`)?.focus();
+  }
+
+  function setQuery(value) {
+    state.terms = normalize(value).split(/\s+/).filter(Boolean);
+    const has = value.length > 0;
+    els.searchClear.classList.toggle('hidden', !has);
+    els.searchKbd.style.display = has ? 'none' : '';
+    renderAll();
+  }
+
+  function clearSearch({ focus = true } = {}) {
+    els.search.value = '';
+    setQuery('');
+    if (focus) els.search.focus();
+  }
+
+  /* ========================================================================
+   * 7. UI: MODAL, ARCHIVOS, OPCIONES Y RESULTADOS
+   * ====================================================================== */
+  const FIELD = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500';
+  const LABEL = 'mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200';
+  const STATUS_STYLES = {
+    info:    'bg-sky-50 text-sky-800 ring-sky-200 dark:bg-sky-500/10 dark:text-sky-200 dark:ring-sky-500/30',
+    error:   'bg-rose-50 text-rose-800 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-500/30',
+    success: 'bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:ring-emerald-500/30',
+  };
+
+  /* ---------- Apertura y cierre ---------- */
+  function openTool(toolId) {
+    const tool = TOOLS.find(t => t.id === toolId);
+    if (!tool) return;
+    const sec = SECTION_BY_ID[tool.section];
+
+    state.tool = tool;
+    state.session++;
+    state.files = [];
+    state.busy = false;
+    state.options = defaultOptions(tool);
+    revokeUrls();
+
+    els.mTitle.textContent = tool.title;
+    els.mDesc.textContent = tool.description;
+    els.mIcon.className = `inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${sec.tile}`;
+    els.mIcon.innerHTML = `<i data-lucide="${tool.icon}" class="h-6 w-6"></i>`;
+
+    els.input.accept = tool.accept.join(',');
+    els.input.multiple = !!tool.multiple;
+    els.dzTitle.textContent = tool.multiple ? 'Arrastra tus archivos aquí' : 'Arrastra tu archivo aquí';
+    const formats = tool.accept.map(ext => ext.slice(1).toUpperCase()).join(', ');
+    const need = tool.minFiles > 1 ? ` · Selecciona ${tool.maxFiles === tool.minFiles ? 'exactamente' : 'al menos'} ${tool.minFiles} archivos` : '';
+    els.dzHint.textContent = `Formatos: ${formats} · Máx. ${CONFIG.maxFileSizeMB} MB por archivo${need}`;
+    els.btnLabel.textContent = tool.action || tool.title;
+
+    renderOptions();
+    renderCustomUI();
+    renderFiles();
+    clearStatus();
+    clearResults();
+    hideProgress();
+    setBusy(false);
+    const enabled = WORKING_TOOLS.has(tool.id);
+    els.dropzone.classList.toggle('hidden', !enabled);
+    els.btnProcess.classList.toggle('hidden', !enabled);
+    if (!enabled) setStatus('info', 'Esta herramienta aún no dispone de procesador.');
+    else if (BETA_TOOLS.has(tool.id)) setStatus('info', 'Función BETA: usa librerías o modelos adicionales descargados de internet; puede tener limitaciones de fidelidad, rendimiento o compatibilidad. Revisa siempre el resultado antes de utilizarlo.');
+
+    document.documentElement.classList.add('overflow-hidden');
+    els.modal.showModal();
+    refreshIcons();
+    els.input.focus();
+  }
+
+  function onModalClosed() {
+    state.session++;       // descarta cualquier proceso en curso
+    state.tool = null;
+    state.files = [];
+    state.busy = false;
+    revokeUrls();
+    document.documentElement.classList.remove('overflow-hidden');
+  }
+
+  function resetModal() {
+    state.session++;
+    state.files = [];
+    state.busy = false;
+    state.options = defaultOptions(state.tool);
+    revokeUrls();
+    renderOptions();
+    renderCustomUI();
+    renderFiles();
+    clearStatus();
+    clearResults();
+    hideProgress();
+    setBusy(false);
+  }
+
+  /* ---------- Opciones ---------- */
+  function defaultOptions(tool) {
+    const values = {};
+    tool.options.forEach(opt => {
+      if (opt.default !== undefined) values[opt.id] = opt.default;
+      else if (opt.type === 'select') values[opt.id] = opt.choices[0][0];
+      else if (opt.type === 'checkbox') values[opt.id] = false;
+      else values[opt.id] = '';
+    });
+    return values;
+  }
+
+  function optionHTML(opt) {
+    const id = `opt-${opt.id}`;
+    const value = state.options[opt.id];
+    const attrs = `id="${id}" data-opt="${opt.id}"`;
+    const showIf = opt.showIf ? ` data-showif-key="${opt.showIf.key}" data-showif-value="${escapeHTML(opt.showIf.value)}"` : '';
+    const wrapClass = (opt.wide || opt.type === 'textarea') ? 'sm:col-span-2' : '';
+
+    if (opt.type === 'checkbox') {
+      return `
+        <div class="sm:col-span-2"${showIf}>
+          <label class="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200">
+            <input ${attrs} type="checkbox" class="h-4 w-4 cursor-pointer rounded accent-indigo-600" ${value ? 'checked' : ''}>
+            ${escapeHTML(opt.label)}
+          </label>
+        </div>`;
+    }
+
+    let control;
+    if (opt.type === 'select') {
+      control = `<select ${attrs} class="${FIELD}">${opt.choices.map(([v, l]) =>
+        `<option value="${escapeHTML(v)}"${String(value) === String(v) ? ' selected' : ''}>${escapeHTML(l)}</option>`).join('')}</select>`;
+    } else if (opt.type === 'textarea') {
+      control = `<textarea ${attrs} rows="3" class="${FIELD}" placeholder="${escapeHTML(opt.placeholder || '')}">${escapeHTML(value || '')}</textarea>`;
+    } else {
+      const extra = [
+        opt.min !== undefined ? `min="${opt.min}"` : '',
+        opt.max !== undefined ? `max="${opt.max}"` : '',
+        opt.type === 'password' ? 'autocomplete="new-password"' : 'autocomplete="off"',
+      ].join(' ');
+      control = `<input ${attrs} type="${opt.type}" value="${escapeHTML(value ?? '')}" placeholder="${escapeHTML(opt.placeholder || '')}" ${extra} class="${FIELD}">`;
+    }
+
+    return `
+      <div class="${wrapClass}"${showIf}>
+        <label for="${id}" class="${LABEL}">${escapeHTML(opt.label)}${opt.required ? ' <span class="text-rose-500" aria-hidden="true">*</span>' : ''}</label>
+        ${control}
+        ${opt.help ? `<p class="mt-1 text-xs text-slate-500 dark:text-slate-400">${escapeHTML(opt.help)}</p>` : ''}
+      </div>`;
+  }
+
+  function renderOptions() {
+    const tool = state.tool;
+    els.options.innerHTML = tool.options.map(optionHTML).join('');
+    els.options.classList.toggle('hidden', tool.options.length === 0);
+    updateOptionVisibility();
+  }
+
+  function isOptionVisible(opt) {
+    return !opt.showIf || String(state.options[opt.showIf.key]) === String(opt.showIf.value);
+  }
+
+  function updateOptionVisibility() {
+    els.options.querySelectorAll('[data-showif-key]').forEach(el => {
+      const visible = String(state.options[el.dataset.showifKey]) === el.dataset.showifValue;
+      el.classList.toggle('hidden', !visible);
+    });
+  }
+
+  function onOptionChange(event) {
+    const target = event.target;
+    const id = target.dataset.opt;
+    if (!id) return;
+    state.options[id] = target.type === 'checkbox' ? target.checked : target.value;
+    updateOptionVisibility();
+    if (id === 'method' && state.tool?.id === 'sign') renderCustomUI();
+  }
+
+  /* ---------- Firma dibujada, escrita o imagen ---------- */
+  function renderCustomUI() {
+    if (state.tool?.id === 'forms') {
+      els.custom.classList.remove('hidden');
+      els.custom.innerHTML = `<div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-700 dark:bg-slate-800" id="form-fields-list">Selecciona un PDF para consultar los nombres de sus campos.</div>`;
+      if (state.files.length) inspectFormFields(state.files[0], state.session);
+      return;
+    }
+    if (state.tool?.id !== 'sign') { els.custom.classList.add('hidden'); els.custom.innerHTML = ''; return; }
+    const method = state.options.method;
+    els.custom.classList.toggle('hidden', method === 'type');
+    if (method === 'type') { els.custom.innerHTML = ''; return; }
+    if (method === 'image') {
+      els.custom.innerHTML = `<div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+        <label for="signature-file" class="mb-2 block text-sm font-semibold">Imagen de tu firma (PNG o JPG, máximo 5 MB)</label>
+        <input type="file" id="signature-file" accept="image/png,image/jpeg" class="block w-full text-sm">
+        <p class="mt-2 text-xs text-slate-500">Una imagen PNG con fondo transparente suele dar mejores resultados.</p>
+        <img id="signature-preview" class="mt-3 hidden max-h-32 rounded-lg border border-slate-200 bg-white p-2" alt="Vista previa de la firma">
+      </div>`;
+      if (state.options.signatureImage) {
+        const preview = els.custom.querySelector('#signature-preview');
+        preview.src = state.options.signatureImage;
+        preview.classList.remove('hidden');
+      }
+      const field = els.custom.querySelector('#signature-file');
+      field.addEventListener('change', () => {
+        const file = field.files?.[0];
+        if (!file) return;
+        if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+          setStatus('error', 'La imagen debe ser PNG o JPG y pesar como máximo 5 MB.'); return;
+        }
+        const fr = new FileReader();
+        fr.onload = () => {
+          state.options.signatureImage = fr.result;
+          const preview = els.custom.querySelector('#signature-preview');
+          if (preview) { preview.src = fr.result; preview.classList.remove('hidden'); }
+          clearStatus();
+        };
+        fr.readAsDataURL(file);
+      });
+      return;
+    }
+    els.custom.innerHTML = `<div class="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+      <div class="mb-2 flex items-center justify-between gap-2"><span class="text-sm font-semibold">Dibuja tu firma aquí</span>
+        <button type="button" id="clear-signature" class="rounded-lg border border-slate-300 px-3 py-1.5 text-xs hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">Borrar trazo</button></div>
+      <canvas id="signature-pad" width="600" height="170" aria-label="Área para dibujar la firma" class="w-full touch-none rounded-lg border border-dashed border-slate-300 bg-white" style="height:170px;cursor:crosshair;"></canvas>
+      <p class="mt-2 text-xs text-slate-500">Usa el mouse, un lápiz táctil o tu dedo. No equivale a una firma digital certificada.</p>
+    </div>`;
+    const pad = els.custom.querySelector('#signature-pad');
+    const ctx = pad.getContext('2d');
+    ctx.lineWidth = 3; ctx.strokeStyle = '#172554'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    let drawing = false;
+    const pos = e => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
+    pad.addEventListener('pointerdown', e => {
+      e.preventDefault(); drawing = true; pad.setPointerCapture(e.pointerId);
+      const [x, y] = pos(e); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + .1, y + .1); ctx.stroke();
+      state.options.signatureDrawing = pad.toDataURL('image/png');
+    });
+    pad.addEventListener('pointermove', e => {
+      if (!drawing) return; e.preventDefault(); const [x, y] = pos(e); ctx.lineTo(x, y); ctx.stroke();
+    });
+    ['pointerup', 'pointercancel'].forEach(type => pad.addEventListener(type, e => {
+      if (!drawing) return; drawing = false; e.preventDefault(); state.options.signatureDrawing = pad.toDataURL('image/png');
+    }));
+    els.custom.querySelector('#clear-signature').addEventListener('click', () => {
+      ctx.clearRect(0, 0, pad.width, pad.height); state.options.signatureDrawing = null;
+    });
+  }
+
+  async function inspectFormFields(file, session) {
+    const target = els.custom.querySelector('#form-fields-list');
+    if (!target) return;
+    target.textContent = 'Leyendo los campos interactivos del documento…';
+    try {
+      const doc = await openPDF(file);
+      if (session !== state.session || state.tool?.id !== 'forms') return;
+      const fields = doc.getForm().getFields();
+      if (!fields.length) { target.textContent = 'No se encontraron campos interactivos. Este archivo puede ser un formulario impreso o escaneado.'; return; }
+      target.innerHTML = `<strong>Campos detectados (${fields.length}):</strong><ul class="mt-2 list-inside list-disc space-y-1">${fields.slice(0, 80).map(f => `<li><code>${escapeHTML(f.getName())}</code> <span class="text-xs text-slate-500">(${escapeHTML(f.constructor?.name || 'campo')})</span></li>`).join('')}</ul>`;
+    } catch (e) { if (session === state.session) target.textContent = 'No se pudieron leer los campos del archivo: ' + e.message; }
+  }
+
+  /* ---------- Archivos ---------- */
+  function addFiles(fileList) {
+    const tool = state.tool;
+    if (!tool || state.busy) return;
+    const incoming = Array.from(fileList || []);
+    if (!incoming.length) return;
+
+    const allowed = tool.accept.map(ext => ext.toLowerCase());
+    const maxBytes = CONFIG.maxFileSizeMB * 1024 * 1024;
+    const accepted = [];
+    const rejected = [];
+
+    incoming.forEach(file => {
+      const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+      if (!allowed.includes(ext)) rejected.push(`${file.name} (formato no admitido)`);
+      else if (file.size === 0) rejected.push(`${file.name} (archivo vacío)`);
+      else if (file.size > maxBytes) rejected.push(`${file.name} (supera ${CONFIG.maxFileSizeMB} MB)`);
+      else accepted.push(file);
+    });
+
+    if (!tool.multiple) {
+      if (accepted.length) state.files = [accepted[0]];
+    } else {
+      const limit = tool.maxFiles || CONFIG.maxFiles;
+      let next = state.files.concat(accepted);
+      if (next.length > limit) {
+        rejected.push(`solo se admiten ${limit} archivos como máximo`);
+        next = next.slice(0, limit);
+      }
+      state.files = next;
+    }
+
+    clearResults();
+    hideProgress();
+    renderFiles();
+    if (tool.id === 'forms' && state.files.length) inspectFormFields(state.files[0], state.session);
+    if (rejected.length) setStatus('error', `No se añadieron algunos archivos: ${rejected.join('; ')}.`);
+    else clearStatus();
+  }
+
+  function renderFiles() {
+    const tool = state.tool;
+    const total = state.files.length;
+    const canMove = tool.orderable && total > 1;
+    const btn = 'rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 disabled:pointer-events-none disabled:opacity-30 dark:hover:bg-slate-700 dark:hover:text-slate-200';
+
+    els.fileList.innerHTML = state.files.map((file, i) => `
+      <li class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/60">
+        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300">
+          <i data-lucide="file" class="h-5 w-5"></i>
+        </span>
+        <span class="min-w-0 flex-1">
+          <span class="block truncate text-sm font-medium" title="${escapeHTML(file.name)}">${escapeHTML(file.name)}</span>
+          <span class="block text-xs text-slate-500 dark:text-slate-400">${formatBytes(file.size)}</span>
+        </span>
+        ${canMove ? `
+          <button type="button" class="${btn}" data-move="up" data-index="${i}" aria-label="Subir ${escapeHTML(file.name)}" ${i === 0 ? 'disabled' : ''}><i data-lucide="arrow-up" class="h-4 w-4"></i></button>
+          <button type="button" class="${btn}" data-move="down" data-index="${i}" aria-label="Bajar ${escapeHTML(file.name)}" ${i === total - 1 ? 'disabled' : ''}><i data-lucide="arrow-down" class="h-4 w-4"></i></button>` : ''}
+        <button type="button" class="${btn}" data-remove="${i}" aria-label="Quitar ${escapeHTML(file.name)}"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </li>`).join('');
+
+    refreshIcons();
+    updateProcessButton();
+  }
+
+  function moveFile(index, dir) {
+    const j = index + dir;
+    if (j < 0 || j >= state.files.length) return;
+    [state.files[index], state.files[j]] = [state.files[j], state.files[index]];
+    clearResults();
+    renderFiles();
+    // Devuelve el foco al botón que se acaba de usar
+    const same = els.fileList.querySelector(`[data-move="${dir > 0 ? 'down' : 'up'}"][data-index="${j}"]`);
+    const other = els.fileList.querySelector(`[data-move="${dir > 0 ? 'up' : 'down'}"][data-index="${j}"]`);
+    (same && !same.disabled ? same : other)?.focus();
+  }
+
+  function removeFile(index) {
+    state.files.splice(index, 1);
+    clearResults();
+    hideProgress();
+    clearStatus();
+    renderFiles();
+    els.input.focus();
+  }
+
+  function updateProcessButton() {
+    const tool = state.tool;
+    els.btnProcess.disabled = !tool || !WORKING_TOOLS.has(tool.id) || state.busy || state.files.length < tool.minFiles;
+  }
+
+  /* ---------- Estado, progreso y ocupado ---------- */
+  function setStatus(type, message) {
+    els.status.innerHTML = `<p class="rounded-xl px-4 py-3 text-sm ring-1 ${STATUS_STYLES[type]}">${escapeHTML(message)}</p>`;
+  }
+  function clearStatus() { els.status.innerHTML = ''; }
+
+  function setProgress(pct) {
+    const value = Math.max(0, Math.min(100, Math.round(pct)));
+    els.progress.classList.remove('hidden');
+    els.progress.setAttribute('aria-valuenow', value);
+    els.progressBar.style.width = `${value}%`;
+  }
+  function hideProgress() {
+    els.progress.classList.add('hidden');
+    els.progress.setAttribute('aria-valuenow', 0);
+    els.progressBar.style.width = '0%';
+  }
+
+  function setBusy(busy) {
+    state.busy = busy;
+    els.btnSpinner.classList.toggle('hidden', !busy);
+    els.btnLabel.textContent = busy ? 'Procesando…' : (state.tool ? (state.tool.action || state.tool.title) : 'Procesar');
+    els.dropzone.classList.toggle('pointer-events-none', busy);
+    els.dropzone.classList.toggle('opacity-60', busy);
+    updateProcessButton();
+  }
+
+  /* ---------- Resultados ---------- */
+  function revokeUrls() {
+    state.urls.forEach(url => URL.revokeObjectURL(url));
+    state.urls = [];
+  }
+  function clearResults() {
+    els.results.innerHTML = '';
+    revokeUrls();
+  }
+
+  function showResults(output) {
+    const items = [].concat(output || []).filter(item => item && item.blob instanceof Blob);
+    if (!items.length) throw new Error('El procesador no devolvió ningún archivo.');
+
+    els.results.innerHTML = items.map(({ blob, filename }) => {
+      const url = URL.createObjectURL(blob);
+      state.urls.push(url);
+      const name = escapeHTML(filename || 'resultado');
+      return `
+        <li class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-sm font-medium text-emerald-900 dark:text-emerald-100" title="${name}">${name}</span>
+            <span class="block text-xs text-emerald-700 dark:text-emerald-300">${formatBytes(blob.size)}</span>
+          </span>
+          <a href="${url}" download="${name}"
+             class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900">
+            <i data-lucide="download" class="h-4 w-4"></i> Descargar
+          </a>
+        </li>`;
+    }).join('');
+    refreshIcons();
+    const notes = items.map(item => item.note).filter(Boolean);
+    setStatus('success', (items.length > 1 ? 'Listo. Tus archivos están preparados para descargar.' : 'Listo. Tu archivo está preparado para descargar.') + (notes.length ? ' ' + notes.join(' ') : '')); 
+  }
+
+  /* ---------- Validación y ejecución ---------- */
+  function validate(tool) {
+    if (state.files.length < tool.minFiles) {
+      return tool.minFiles > 1 ? `Añade al menos ${tool.minFiles} archivos para continuar.` : 'Añade un archivo para continuar.';
+    }
+    for (const opt of tool.options) {
+      if (!isOptionVisible(opt)) continue;
+      const value = state.options[opt.id];
+      if (opt.required && !String(value ?? '').trim()) return `Completa el campo «${opt.label}».`;
+      if (opt.mustMatch && value !== state.options[opt.mustMatch]) return 'Las contraseñas no coinciden.';
+    }
+    return null;
+  }
+
+  async function runTool() {
+    const tool = state.tool;
+    if (!tool || state.busy) return;
+
+    const problem = validate(tool);
+    if (problem) { setStatus('error', problem); return; }
+    if (tool.id === 'edit') {
+      const editFile = state.files[0];
+      els.modal.close();
+      try { await window.PDFFerEditor.open(editFile); }
+      catch (err) { console.error('Editor PDF:', err); window.alert('No se pudo abrir el editor visual: ' + err.message); }
+      return;
+    }
+
+    clearResults();
+    clearStatus();
+    const session = state.session;
+    setBusy(true);
+    setProgress(0);
+
+    try {
+      const processor = Processors[tool.id];
+      if (!processor) throw new NotImplementedError(tool.id);
+
+      const output = await processor({
+        tool,
+        files: [...state.files],
+        options: { ...state.options },
+        onProgress: pct => { if (session === state.session) setProgress(pct); },
+      });
+
+      if (session !== state.session) return;   // el usuario cerró o limpió mientras tanto
+      setProgress(100);
+      showResults(output);
+    } catch (err) {
+      if (session !== state.session) return;
+      hideProgress();
+      if (err instanceof NotImplementedError) {
+        console.info(`[${CONFIG.appName}] Falta conectar un procesador: registerProcessor('${tool.id}', async (ctx) => { ... })`);
+        setStatus('info', 'Esta herramienta está en desarrollo y no procesa archivos todavía.');
+      } else {
+        console.error(err);
+        setStatus('error', `No se pudo completar la operación. ${err && err.message ? err.message : ''}`.trim());
+      }
+    } finally {
+      if (session === state.session) setBusy(false);
+    }
+  }
+
+  /* ---------- Arrastrar y soltar ---------- */
+  function setupDropzone() {
+    let depth = 0;   // contador para evitar parpadeos al pasar sobre elementos hijos
+    const dz = els.dropzone;
+    const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+
+    dz.addEventListener('dragenter', e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth++;
+      dz.dataset.dragging = 'true';
+    });
+    dz.addEventListener('dragover', e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    dz.addEventListener('dragleave', () => {
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) dz.dataset.dragging = 'false';
+    });
+    dz.addEventListener('drop', e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      depth = 0;
+      dz.dataset.dragging = 'false';
+      addFiles(e.dataTransfer.files);
+    });
+
+    // Evita que soltar un archivo fuera de la zona abra el archivo en el navegador
+    ['dragover', 'drop'].forEach(type => window.addEventListener(type, e => { if (hasFiles(e)) e.preventDefault(); }));
+
+    els.input.addEventListener('change', () => {
+      addFiles(els.input.files);
+      els.input.value = '';   // permite volver a elegir el mismo archivo
+    });
+  }
+
+  /* ========================================================================
+   * 8. ARRANQUE
+   * ====================================================================== */
+  function init() {
+    const $ = id => document.getElementById(id);
+    Object.assign(els, {
+      search: $('search'), searchClear: $('search-clear'), searchKbd: $('search-kbd'), searchForm: $('search-form'),
+      tabs: $('tabs'), panel: $('tool-panel'), summary: $('results-summary'), themeToggle: $('theme-toggle'),
+      modal: $('tool-modal'), mTitle: $('modal-title'), mDesc: $('modal-desc'), mIcon: $('modal-icon'), mClose: $('modal-close'),
+      dropzone: $('dropzone'), dzTitle: $('dz-title'), dzHint: $('dz-hint'), input: $('file-input'),
+      fileList: $('file-list'), options: $('options'), custom: $('custom-ui'),
+      progress: $('progress'), progressBar: $('progress-bar'),
+      status: $('status'), results: $('results'),
+      btnReset: $('btn-reset'), btnProcess: $('btn-process'), btnLabel: $('btn-label'), btnSpinner: $('btn-spinner'),
+    });
+
+    // Nombre de la plataforma y año
+    document.querySelectorAll('[data-app-name]').forEach(el => { el.textContent = CONFIG.appName; });
+    document.title = `${CONFIG.appName} · Herramientas para documentos y archivos`;
+    $('year').textContent = new Date().getFullYear();
+
+    // Búsqueda en tiempo real
+    els.search.addEventListener('input', () => setQuery(els.search.value));
+    els.search.addEventListener('keydown', e => { if (e.key === 'Escape' && els.search.value) { e.preventDefault(); clearSearch(); } });
+    els.searchClear.addEventListener('click', () => clearSearch());
+    els.searchForm.addEventListener('submit', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '');
+      if (e.key === '/' && !typing && !els.modal.open && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        els.search.focus();
+      }
+    });
+
+    // Pestañas (clic y teclado)
+    els.tabs.addEventListener('click', e => {
+      const btn = e.target.closest('[data-tab]');
+      if (btn) setTab(btn.dataset.tab, { focus: true });
+    });
+    els.tabs.addEventListener('keydown', e => {
+      const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+      if (!keys.includes(e.key)) return;
+      e.preventDefault();
+      const i = TABS.findIndex(t => t.id === state.tab);
+      let next = i;
+      if (e.key === 'ArrowRight') next = (i + 1) % TABS.length;
+      if (e.key === 'ArrowLeft') next = (i - 1 + TABS.length) % TABS.length;
+      if (e.key === 'Home') next = 0;
+      if (e.key === 'End') next = TABS.length - 1;
+      setTab(TABS[next].id, { focus: true });
+    });
+
+    // Tarjetas y acciones del estado vacío
+    els.panel.addEventListener('click', e => {
+      const card = e.target.closest('[data-tool]');
+      if (card) return openTool(card.dataset.tool);
+      const action = e.target.closest('[data-action]')?.dataset.action;
+      if (action === 'show-all') setTab('all');
+      if (action === 'clear-search') clearSearch();
+    });
+
+    // Modal
+    els.mClose.addEventListener('click', () => els.modal.close());
+    els.modal.addEventListener('click', e => { if (e.target === els.modal) els.modal.close(); });   // clic en el fondo
+    els.modal.addEventListener('close', onModalClosed);
+    els.btnProcess.addEventListener('click', runTool);
+    els.btnReset.addEventListener('click', resetModal);
+    els.options.addEventListener('input', onOptionChange);
+    els.options.addEventListener('change', onOptionChange);
+    els.fileList.addEventListener('click', e => {
+      const move = e.target.closest('[data-move]');
+      if (move) return moveFile(parseInt(move.dataset.index, 10), move.dataset.move === 'up' ? -1 : 1);
+      const remove = e.target.closest('[data-remove]');
+      if (remove) removeFile(parseInt(remove.dataset.remove, 10));
+    });
+    setupDropzone();
+
+    // Tema claro / oscuro
+    els.themeToggle.addEventListener('click', () => {
+      const dark = document.documentElement.classList.toggle('dark');
+      try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (_) {}
+    });
+
+    renderAll();
+    refreshIcons();
+  }
+
+  // API pública para conectar módulos desde otros scripts o desde la consola
+  window.DocTools = { CONFIG, TOOLS, registerProcessor, loadScript, parsePageRanges, formatBytes };
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+<script src="./editor.js" defer></script>
+<script src="./pwa.js" defer></script>
+</body>
+</html>

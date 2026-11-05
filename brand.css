@@ -1,0 +1,43 @@
+/* PDF Fer — interfaz diseñada con tipografía sans-serif de sistema. */
+:root { --fer-blue:#5148e6; --fer-ink:#18213c; --fer-soft:#eef1ff; --fer-border:#e5e9f2; }
+* { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+body { background:#f8faff !important; }
+html.dark body { background:#070e21 !important; }
+.fer-brandmark { display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;border-radius:15px;color:#fff;background:linear-gradient(135deg,#5b52ed,#342ba1);box-shadow:0 7px 18px rgba(79,70,229,.25);font-size:18px;font-weight:900;letter-spacing:-.11em;padding-right:4px; }
+.fer-subbrand{display:block;font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#77829a;font-weight:700;line-height:1.1}
+.fer-hero{position:relative;isolation:isolate;border:1px solid #e8eafb;border-radius:28px;background:radial-gradient(ellipse at 88% 15%,rgba(155,139,255,.19),transparent 53%),linear-gradient(125deg,#fff 12%,#f0f3ff 100%);padding:48px 42px;margin-top:27px;overflow:hidden;box-shadow:0 14px 35px rgba(35,45,95,.045)}
+.dark .fer-hero{border-color:#263256;background:radial-gradient(ellipse at 85% 0,rgba(99,102,241,.2),transparent 50%),linear-gradient(135deg,#131c35,#0c142a);box-shadow:none}
+.fer-eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #dfe2ff;background:#f5f4ff;border-radius:999px;padding:8px 13px;color:#4f46bd;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.dark .fer-eyebrow{background:#252355;border-color:#4f46a7;color:#b7b5ff}
+.fer-hero h1{font-size:clamp(34px,4.5vw,58px);line-height:1.13;letter-spacing:-.055em;font-weight:850;max-width:810px;margin:22px 0 16px}
+.fer-hero h1 span{color:#5148e6}
+.fer-hero p{max-width:650px;color:#62718b;font-size:16px;line-height:1.7}
+.dark .fer-hero p{color:#a4b0c9}
+.fer-feature-row{display:flex;flex-wrap:wrap;gap:11px;margin-top:25px}
+.fer-feature{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #e7eaf4;color:#4d5d74;padding:9px 12px;border-radius:11px;font-size:12px;font-weight:650}
+.dark .fer-feature{background:#18213a;border-color:#293652;color:#c4cde2}
+.fer-hero-art{position:absolute;z-index:-1;right:-44px;top:20px;width:320px;height:320px;border-radius:50%;border:55px solid rgba(106,101,237,.047);transform:rotate(-20deg)}
+.fer-feature .lucide {width:15px;height:15px;color:#6258dc}
+#tool-panel button[data-tool]{transition:transform .15s,box-shadow .15s,border-color .15s;border-radius:19px;min-height:177px;position:relative;overflow:hidden}
+#tool-panel button[data-tool]:hover{box-shadow:0 15px 35px rgba(29,39,91,.10);transform:translateY(-3px)}
+#tool-panel button[data-tool] > span:first-child{border-radius:14px}
+#tool-panel button[data-tool] span[class*="text-\[11px\]"]{font-size:10px;letter-spacing:.025em}
+.fer-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:23px 0 16px}
+.fer-quickbutton,.fer-install{display:inline-flex;align-items:center;gap:8px;border-radius:12px;border:1px solid #e0e6f0;background:white;padding:10px 14px;font-size:13px;font-weight:700;color:#4b5572;cursor:pointer;transition:.2s}
+.fer-quickbutton:hover,.fer-install:hover{border-color:#a5abff;background:#f6f6ff;color:#4941ca}
+.dark .fer-quickbutton,.dark .fer-install{background:#141e35;color:#d6dcef;border-color:#32405b}
+.fer-install{background:#5148e6;color:#fff;border-color:#5148e6}
+.fer-install:hover{background:#4138d9;color:#fff}
+.fer-live-indicator{font-size:12px;color:#67748e;display:flex;align-items:center;gap:6px;margin-left:auto}
+.fer-live-indicator:before{content:'';display:block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px #d1fae5}
+.fer-live-indicator.offline:before{background:#f59e0b;box-shadow:0 0 0 3px #fef3c7}
+.fer-footnote{font-size:11px;line-height:1.6;color:#8c97ac}
+.fer-privacy{border-color:#e1e6f7!important;background:#fff!important;color:#536078!important}
+.dark .fer-privacy{border-color:#2d3a5b!important;background:#131c33!important;color:#c8d2e8!important}
+.fer-privacy .lucide{color:#4e64d2}
+#tool-modal{border:1px solid #e0e6f5;border-radius:22px}
+.dark #tool-modal{border-color:#38435c}
+#tool-modal::backdrop{background:rgba(7,11,29,.72);backdrop-filter:blur(8px)}
+.fer-detailed-note{font-size:12px;color:#64748b;line-height:1.65;padding:10px 12px;background:#f1f5fa;border-radius:10px}
+.dark .fer-detailed-note{background:#17223b;color:#b9c5dc}
+@media(max-width:640px){.fer-hero{padding:28px 22px;margin-top:15px;border-radius:21px}.fer-hero p{font-size:14px}.fer-feature-row{gap:7px}.fer-feature{font-size:11px;padding:7px}.fer-live-indicator{margin-left:0}#tool-panel button[data-tool]{min-height:auto}}
